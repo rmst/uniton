@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pysharp',
-    version='0.0.1',
+    version='0.1.0',
     description='Async RPC connecting Python to C# and Unity3D',
     url='https://github.com/rmst/pysharp',
     author='Simon Ramstedt',

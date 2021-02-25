@@ -1,4 +1,5 @@
 # Pysharp
+Pysharp is a framework for controlling C# programs and the Unity game engine from Python.
 
 ### Install
 To use Pysharp in a new Unity3D project just drop [pysharp.dll](https://github.com/rmst/pysharp/raw/main/pysharp.dll) somewhere into the project's `Assets` directory.
@@ -8,13 +9,10 @@ Install the Python package via
 pip install pysharp
 ```
 
-
 ### Usage
+To connect to a running C# process do
+```python
+from pysharp import Pysharp
+ps = Pysharp()
+```
 
-
-
-
-
-
-### License
-Pysharp is an alpha release at the moment. Usage of this version is free for everyone. Future versions will remain free for private use but otherwise might or might not become for-pay.
