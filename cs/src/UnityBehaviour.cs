@@ -31,24 +31,24 @@ using Pysharp;
 // }
 
 
-public class PysharpUnity : MonoBehaviour {
+public class UnityBehaviour : MonoBehaviour {
 
   [RuntimeInitializeOnLoadMethod]
   public static void OnLoad(){
-    Log.Print("Pysharp is running");
+    Log.Print("Pysharp is running", Log.Level.INFO);
     GameObject go = new GameObject("Pysharp");
-    go.AddComponent<PysharpUnity>();
+    go.AddComponent<UnityBehaviour>();
   }
 
   // const int Port = 50051;
   // Dispatcher disp;
-  UnpyService service;
+  Connection service;
   // Use this for initialization
   void Start () {
 
 
     // disp = new Dispatcher();
-    service = new UnpyService();
+    service = new Connection();
     // service.disp = disp;
     service.Init();
 
