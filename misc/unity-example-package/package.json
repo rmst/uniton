@@ -1,0 +1,20 @@
+{
+    "name": "net.pysharp.unity",
+    "version": "0.0.1",
+    "displayName": "PySharp",
+    "description": "Python-C# Interface",
+    "unity": "2020.1",
+    "unityRelease": "0b5",
+    "dependencies": {
+
+   },
+   "keywords": [
+      "python"
+    ],
+    "author": {
+      "name": "Simon Ramstedt",
+      "email": "simonramstedt@gmail.com",
+      "url": "https://simonramstedt.com"
+    }
+  }
+  
