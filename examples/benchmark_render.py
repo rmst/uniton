@@ -1,9 +1,9 @@
-import pysharp
+import uniton
 import numpy as np
 import imageio
 from timeit import timeit
 
-from pysharp import Connection
+from uniton import Connection
 
 c = Connection()
 # c.u.SetDebug(True)
