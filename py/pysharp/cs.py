@@ -34,55 +34,93 @@ def recvall(sock, n):
   return data
 
 
-class Connection:
-  rit = None
-  return_thread = None
-  cmd_queue = None
-  sock = None
+import subprocess
+from time import time
 
-  def __init__(self):
-    self.id_c = 2  # the first two elements are manually set
 
-    HOST = '127.0.0.1'  # The server's hostname or IP address
-    PORT = 11000        # The port used by the server
+class Cs:
+  """
+  Representing a running C# program
+  Doubles as root namespace of that program, i.e. cs.System will return the 'System' namespace
+  """
 
-    self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    self.sock.connect((HOST, PORT))
-    self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+  _return_thread = None
+  _cmd_queue = None
+  _proc = None
+  _sock = None
 
-    remote_version, = struct.unpack('i', recvall(self.sock, 4))
+  def __init__(self, path=None, host=None, port=None):
+    atexit.register(self.close)
+
+    if path is not None:
+      # TODO: find free port and set as env variable
+      self._proc = subprocess.Popen([path])
+      host = '127.0.0.1'
+      port = 11001 if port is None else port
+    else:
+      host = '127.0.0.1' if host is None else host
+      port = 11000 if port is None else port
+
+    self._id_c = 2  # the first two elements are manually set
+
+    # connect
+    timeout = time() + 10
+
+    while True:
+      try:
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock.connect((host, port))
+        break
+      except ConnectionRefusedError:
+        if not self._proc:
+          raise
+        elif self._proc.poll() is not None:
+          raise RuntimeError(f"Process {path} died before Pysharp could connect!")
+        elif time() > timeout:
+          raise ConnectionRefusedError(f"Is {path} missing Pysharp?")
+
+    self._sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+    # version compatibility check
+    remote_version, = struct.unpack('i', recvall(self._sock, 4))
 
     if remote_version not in rpc.compatible_versions:
       raise AttributeError(f"Remote version {remote_version} is not a compatible version. Must be in {rpc.compatible_versions}")
 
-    atexit.register(self.close)
-
-    self.garbage_objects = []
+    # init object management
+    self._garbage_objects = []
 
     # bootstrap
-    self.Type = CsObject(self, id=0)
-    self.u = CsObject(self, id=1)
+    self._cs_type = CsObject(self, id=0)  # C# System.Type
+    self._backend = CsObject(self, id=1)
 
-    # self.udel = self.u.omap.Remove
-    # self._del_objects = self.u.DelObjects
+    from .namespace import Namespace
+    from .unity_old import UnityEngine
+    self._ns = Namespace(self)
+    self._ns.ue = self._ns.UnityEngine = UnityEngine(self)
 
-    # nice to have objects:
-    self.ToStr = self.u.ToStr
-    # self.cs = Namespace(self)
-    # self.ue = Namespace(self, "UnityEngine")
-    # self.scene_manager = self.cs.SceneManager
-    # self.scene = self.scene_manager.GetActiveScene()
-    # self.GameObject = self.cs.GameObject
-    # self.ReferenceEquals = self.cs.Object.ReferenceEquals
-    # self.u.SetDebug(False)
+    self.Pysharp.Log.level = 2  # only print INFO and ERROR
+
+  @property
+  def _pid(self):
+    return self.System.Diagnostics.Process.GetCurrentProcess().Id
+
+  def __getattr__(self, item):
+    return getattr(self._ns, item)
+
+  def __dir__(self):
+    return list(super().__dir__()) + dir(self._ns)
 
   def close(self):
     atexit.unregister(self.close)
-    if self.sock is not None:
-      self.sock.close()
+    if self._sock is not None:
+      self._sock.close()
+
+    if self._proc is not None:
+      self._proc.kill()
 
   def delete_object(self, x):
-    self.garbage_objects.append(x)
+    self._garbage_objects.append(x)
     # print("del", x.id)
 
     # if len(self.garbage_objects) > 10000000:  # Don't delete because we recycle
@@ -93,25 +131,26 @@ class Connection:
 
   def make_id(self):
     # print(tuple(x.id for x in self.garbage_objects))
-    if self.garbage_objects:
-      x = self.garbage_objects.pop()
+    if self._garbage_objects:
+      x = self._garbage_objects.pop()
       # print("recycle", x.id)
     else:
-      x = self.id_c
-      self.id_c += 1  # TODO: check for overflow
+      x = self._id_c
+      self._id_c += 1  # TODO: check for overflow
       # print('mk', x.id)
     return x
 
   def run_cmds(self):
+    # TODO: make separate class for this
     try:
       while True:
         # get length
-        d = recvall(self.sock, 4)
+        d = recvall(self._sock, 4)
         if d is None: break
         n, = struct.unpack('i', d)
 
         # get data
-        d = recvall(self.sock, n)
+        d = recvall(self._sock, n)
         if d is None: break
         exc, = struct.unpack_from('i', d, 0)
         if exc:
@@ -132,13 +171,13 @@ class Connection:
       # print("Shutting down return thread")
 
   def cmd(self, method, data, out=None):
-    if self.return_thread is None or not self.return_thread.is_alive():
+    if self._return_thread is None or not self._return_thread.is_alive():
       # if self.rit is None:
       # self.cmd_queue = Queue(1000)
       self.promise_queue = Queue()
       self.response_queue = Queue(1)
-      self.return_thread = Thread(target=self.run_cmds, daemon=True)  # TODO: remove daemon and shut down properly
-      self.return_thread.start()
+      self._return_thread = Thread(target=self.run_cmds, daemon=True)  # TODO: remove daemon and shut down properly
+      self._return_thread.start()
 
       # self.rit = self.cmd_it()
       CsObject(self, self.cmd(rpc.OPEN_CMD_STREAM, b''))  # cmd stream open
@@ -160,7 +199,7 @@ class Connection:
 
       self.promise_queue.put(out)
 
-    self.sock.sendall(data)
+    self._sock.sendall(data)
 
     return out
 

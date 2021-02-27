@@ -285,9 +285,12 @@ namespace Pysharp{
       while(true){
 
         // IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
-        // IPAddress ipAddress = ipHostInfo.AddressList[0];  
+        // IPAddress ipAddress = ipHostInfo.AddressList[0]; 
+
+        //TODO: make this configurable!
         var ipAddress = IPAddress.Parse("127.0.0.1");
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000); 
+        int port = Application.isEditor ? 11000 : 11001;
+        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port); 
         // Create a TCP/IP socket.  
         Socket listener = new Socket(ipAddress.AddressFamily,  
           SocketType.Stream, ProtocolType.Tcp );  

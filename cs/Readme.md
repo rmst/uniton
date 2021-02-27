@@ -7,9 +7,8 @@ C# code for the Pysharp backend. Everything is compiled into `pysharp.dll`. To u
 To compile all the `.cs` files into `out/pysharp.dll` the [Mono C# compiler](https://www.mono-project.com/download/stable/) `csc` is needed. To compile run
 
 ```bash
-UNITYENGINE_DLL="/Applications/Unity/Hub/Editor/2020.2.1f1/Unity.app/Contents/Managed/UnityEngine.dll"
-csc -target:library -r:${UNITYENGINE_DLL} -r:./lib/AsyncGPUReadbackPlugin.dll -out:./out/pysharp.dll ./src/*.cs
-cp ./out/pysharp.dll ../pysharp/pysharp.dll
+make  # check Makefile
+cp out/pysharp.dll ~/dev/pysharp/
 ```
 
 

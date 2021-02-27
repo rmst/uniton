@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using System;
 
 namespace Pysharp {
 
@@ -60,7 +61,8 @@ namespace Pysharp {
       return AsyncGPUReadback.Request(cam.targetTexture);
     }
     
-    public static byte[] PollReadbackRequest(AsyncGPUReadbackRequest req){
+
+    public static byte[] WaitReadbackRequest(AsyncGPUReadbackRequest req){
       req.WaitForCompletion();
       if (req.hasError){
         Log.Print("GPU readback error", Log.Level.ERROR);
@@ -68,9 +70,45 @@ namespace Pysharp {
         var res = req.GetData<byte>().ToArray();
         return res;
       }
-
-      return null;
+      throw new Exception();
     }
 
+    public static byte[] PollReadbackRequest(AsyncGPUReadbackRequest req){
+      // req.WaitForCompletion();
+      req.Update();
+      if (req.hasError){
+        Log.Print("GPU readback error", Log.Level.ERROR);
+      } else if (req.done) {
+        var res = req.GetData<byte>().ToArray();
+        return res;
+      }
+      // Log.Print("Empty");
+      return new byte[]{};
+    }
   }
+
+
+
+
+  // public class RenderQueue{
+  //   AsyncGPUReadbackRequest[] q;
+  //   RenderTexture[] t;
+  //   int i = 0;
+  //   Camera c;
+
+  //   public RenderQueue(Camera camera, RenderTexture[] textures){
+  //     c = camera;
+  //     t = textures;
+  //     q = new AsyncGPUReadbackRequest[t.Length];
+  //   }
+
+  //   public Update(){
+  //     cam.targetTexture = t[i];
+  //     q[i] = cam.Render();
+
+  //     if(q[(i+q.Length-1)] != null){
+
+  //     }
+  //   }
+  // }
 }
