@@ -1,11 +1,11 @@
-import pysharp
+import uniton
 # import numpy as np
 # import imageio
 # from timeit import timeit
-from pysharp.render import QueuedRenderer
+from uniton.render import QueuedRenderer
 
-u = pysharp.Unity("/Users/simon/dev/unpy/unity/Unpy/testbin.app/Contents/MacOS/Unpy")
-# u = pysharp.Unity()
+u = uniton.Unity("/Users/simon/dev/unpy/unity/Unpy/testbin.app/Contents/MacOS/Unpy")
+# u = uniton.Unity()
 u.stepping = True
 
 ue = u.UnityEngine

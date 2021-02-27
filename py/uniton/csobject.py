@@ -1,7 +1,7 @@
 import threading
 
-from pysharp.protocol import rpc
-from pysharp.util import removeprefix, BrokenPromiseException, RemoteException
+from uniton.protocol import rpc
+from uniton.util import removeprefix, BrokenPromiseException, RemoteException
 
 
 class Promise:
