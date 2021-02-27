@@ -1,12 +1,12 @@
-from .namespace import Namespace
+from .unityproc import UnityProc
 
 
 # noinspection PyProtectedMember
-class UnityEngine(Namespace):
+class UnityEngine(UnityProc):
   _default_timescales = (1., 0.02, 0.)  # the real values will be set on stepping=True
 
-  def __init__(self, cs):
-    super().__init__(cs, "UnityEngine")
+  # def __init__(self, ue):
+  #   super().__init__(ue, "UnityEngine")
 
   def pause(self):
     self._default_timescales = (
@@ -17,14 +17,14 @@ class UnityEngine(Namespace):
     self.Time.timeScale = 100  # Warning: 100 is the max value. if higher Unity will silently reject the change!
     self.Time.fixedDeltaTime = 0.02
     self.Time.captureDeltaTime = 0.02  # aligns Update and FixedUpdate
-    self.cs._backend.setStepping(True)
+    self._backend.setStepping(True)
 
   def paused(self):
-    return self.cs._backend.stepping.py()
+    return self._backend.stepping.py()
 
   def resume(self):
     (self.Time.timeScale, self.Time.fixedDeltaTime, self.Time.captureDeltaTime) = self._default_timescales
-    self.cs._backend.setStepping(False)
+    self._backend.setStepping(False)
 
   def step(self):
     if "_step" not in vars(self):

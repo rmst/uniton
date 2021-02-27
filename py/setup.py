@@ -7,7 +7,7 @@ if sys.version_info < (3, 6):
 setup(
     name='uniton',
     version='0.1.0',
-    description='Async RPC connecting Python to C# and Unity3D',
+    description='Control Unity from Python',
     url='https://github.com/rmst/uniton',
     author='Simon Ramstedt',
     author_email='simonramstedt@gmail.com',

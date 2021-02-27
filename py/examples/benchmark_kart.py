@@ -3,12 +3,10 @@ import uniton
 # import imageio
 # from timeit import timeit
 
-u = uniton.Unity()
-u.stepping = True
+ue = uniton.UnityEngine()
+ue.pause()
 
-ue = u.UnityEngine
-
-u.Pysharp.Log.level = 3  # suppress log messages
+ue.Uniton.Log.level = 3  # suppress log messages
 
 
 gm = ue.GameObject.Find("GameManager")  # otherwise we run out of time
@@ -27,8 +25,8 @@ tex = ue.RenderTexture.GetTemporary(w, h, 0, ue.RenderTextureFormat.ARGB32)
 
 cam.targetTexture = tex
 
-render = u.Pysharp.RenderTools.RenderAsync
-readback = u.Pysharp.RenderTools.PollReadbackRequest
+render = ue.Uniton.RenderTools.RenderAsync
+readback = ue.Uniton.RenderTools.PollReadbackRequest
 
 # tex_raw = tex.GetRawTextureData
 
@@ -58,7 +56,7 @@ def test(n):
   req = None
   for _ in range(n):
     req = render(cam)
-    [u.step() for _ in range(1)]
+    [ue.step() for _ in range(1)]
     # c.u.obj_id_gen.py()
 
     kart.Rigidbody.velocity = ue.Vector3(-30, 0, 0)

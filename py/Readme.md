@@ -1,4 +1,4 @@
-# Pysharp Python Frontent
+# Uniton Python Frontent
 
 To build and upload the Python package to PyPi run
 ```bash

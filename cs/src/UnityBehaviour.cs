@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
-using Pysharp;
+using Uniton;
 
 // using UnityEditor;  // needed for [InitializeOnLoad]
 // [InitializeOnLoad]
@@ -35,8 +35,8 @@ public class UnityBehaviour : MonoBehaviour {
 
   [RuntimeInitializeOnLoadMethod]
   public static void OnLoad(){
-    Log.Print("Pysharp is running", Log.Level.INFO);
-    GameObject go = new GameObject("Pysharp");
+    Log.Print("Uniton is running", Log.Level.INFO);
+    GameObject go = new GameObject("Uniton");
     go.AddComponent<UnityBehaviour>();
   }
 

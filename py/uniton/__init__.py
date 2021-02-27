@@ -1,12 +1,11 @@
 import atexit
 import subprocess
 
-from .cs import Cs
-# from .csobject import CsObject
-# from .namespace import Namespace
+# from .unityproc import UnityProc
+from .unityengine import UnityEngine
 
 #
-# class Pysharp(Namespace):
+# class Uniton(Namespace):
 #   def __init__(self):
 #     c = Connection()
 #     super().__init__(c)
@@ -63,6 +62,8 @@ def _monkey_path_rlcompleter():
   # Avoid querying every object on autocomplete in the REPL. It's silly behaviour by rlcompleter anyway.
 
   import rlcompleter
+  from .csobject import CsObject
+  from .namespace import Namespace
 
   def patched_getattr(obj, k):
     if isinstance(obj, (CsObject, Namespace)):

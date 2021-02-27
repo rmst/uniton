@@ -36,25 +36,25 @@ GETATTR_BLACKLIST = (
 
 # noinspection PyProtectedMember
 class CsObject:
-  cs = None
+  ue = None
   id = None
 
-  def __init__(self, cs, id):
-    self.cs = cs
+  def __init__(self, ue, id):
+    self.ue = ue
     self.id = id
 
   def __getattr__(self, k: str):
     if k.startswith('_') or k in GETATTR_BLACKLIST:
       raise AttributeError()
 
-    id = self.cs.cmd(rpc.GETMEMBER, self.cs.serialize_objs(k, self))
-    return CsObject(self.cs, id)
+    id = self.ue.cmd(rpc.GETMEMBER, self.ue.serialize_objs(k, self))
+    return CsObject(self.ue, id)
 
   def __setattr__(self, k, v):
-    if k in ("cs", "id") or k.startswith('_') or k in GETATTR_BLACKLIST:
+    if k in ("ue", "id") or k.startswith('_') or k in GETATTR_BLACKLIST:
       return super().__setattr__(k, v)
 
-    self.cs.cmd(rpc.SETMEMBER, self.cs.serialize_objs(self, k, v))
+    self.ue.cmd(rpc.SETMEMBER, self.ue.serialize_objs(self, k, v))
 
   def __getitem__(self, k):
     return self.get_Item(k)
@@ -75,18 +75,18 @@ class CsObject:
   def __call__(self, *args):
     # TODO: better error message for wrong argument types
     # return self._con.cmd(rpc.INVOKE, (self, args))
-    id = self.cs.cmd(rpc.INVOKE, self.cs.serialize_objs(self, *args))
-    return CsObject(self.cs, id)
+    id = self.ue.cmd(rpc.INVOKE, self.ue.serialize_objs(self, *args))
+    return CsObject(self.ue, id)
 
   @property
   def py(self):
     out = None
     out = Promise() if out is None else out
-    return self.cs.cmd(rpc.GETOBJ, self.cs.serialize_objs(self), out=out)
+    return self.ue.cmd(rpc.GETOBJ, self.ue.serialize_objs(self), out=out)
 
   def __str__(self):
     try:
-      return "C# " + self.cs._backend.ToStr(self).py()
+      return "C# " + self.ue._backend.ToStr(self).py()
     except BrokenPromiseException as e:
       # return "C# (Broken Promise)"
       return ""
@@ -100,7 +100,7 @@ class CsObject:
     try:
       t = self.GetType()
 
-      if t.IsSubclassOf(self.cs._cs_type).py():
+      if t.IsSubclassOf(self.ue._cs_type).py():
         # self is a type
         x = [m.Name.py for m in self.GetMethods()]
       else:
@@ -126,7 +126,7 @@ class CsObject:
     # print("Del ", self.id)
 
     # self._con.udel(self.id)
-    self.cs.delete_object(self.id)
+    self.ue.delete_object(self.id)
 
   def __mul__(self, other):
     return self.op_Multiply(self, other)

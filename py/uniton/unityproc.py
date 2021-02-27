@@ -38,9 +38,9 @@ import subprocess
 from time import time
 
 
-class Cs:
+class UnityProc:
   """
-  Representing a running C# program
+  Representing a running Unity program
   Doubles as root namespace of that program, i.e. cs.System will return the 'System' namespace
   """
 
@@ -75,9 +75,9 @@ class Cs:
         if not self._proc:
           raise
         elif self._proc.poll() is not None:
-          raise RuntimeError(f"Process {path} died before Pysharp could connect!")
+          raise RuntimeError(f"Process {path} died before Uniton could connect!")
         elif time() > timeout:
-          raise ConnectionRefusedError(f"Is {path} missing Pysharp?")
+          raise ConnectionRefusedError(f"Is {path} missing Uniton?")
 
     self._sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
@@ -95,18 +95,19 @@ class Cs:
     self._backend = CsObject(self, id=1)
 
     from .namespace import Namespace
-    from .unity_old import UnityEngine
     self._ns = Namespace(self)
-    self._ns.ue = self._ns.UnityEngine = UnityEngine(self)
+    # from .unity_old import UnityEngine
+    # self._ns.ue = self._ns.UnityEngine = UnityEngine(self)
 
-    self.Pysharp.Log.level = 2  # only print INFO and ERROR
+    # self.Uniton.Log.level = 2  # only print INFO and ERROR
 
   @property
   def _pid(self):
     return self.System.Diagnostics.Process.GetCurrentProcess().Id
 
   def __getattr__(self, item):
-    return getattr(self._ns, item)
+    # return getattr(self._ns, item)
+    return self._ns.__getattr__(item)
 
   def __dir__(self):
     return list(super().__dir__()) + dir(self._ns)

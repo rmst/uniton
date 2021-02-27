@@ -14,11 +14,11 @@ class QueuedRenderer:
     self.camera = camera
     self.render_steps = render_steps
     self.ipc_steps = ipc_steps
-    self.cs = camera.cs
-    self._render = self.cs.Pysharp.RenderTools.RenderAsync
-    self._readback_wait = self.cs.Pysharp.RenderTools.WaitReadbackRequest
-    texture_fmt = self.cs.ue.RenderTextureFormat.ARGB32
-    get_texture = self.cs.ue.RenderTexture.GetTemporary
+    self.ue = camera.ue
+    self._render = self.ue.Uniton.RenderTools.RenderAsync
+    self._readback_wait = self.ue.Uniton.RenderTools.WaitReadbackRequest
+    texture_fmt = self.ue.RenderTextureFormat.ARGB32
+    get_texture = self.ue.RenderTexture.GetTemporary
     self.textures = [get_texture(width, height, 0, texture_fmt) for _ in range(render_steps)]
     self.render_queue = deque(maxlen=render_steps)
     self.ipc_queue = deque(maxlen=ipc_steps)
@@ -47,4 +47,4 @@ class QueuedRenderer:
       return None
 
   def close(self):
-    [self.cs.ue.RenderTexture.ReleaseTemporary(t) for t in self.textures]
+    [self.ue.RenderTexture.ReleaseTemporary(t) for t in self.textures]

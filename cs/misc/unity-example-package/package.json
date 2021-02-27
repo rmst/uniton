@@ -1,7 +1,7 @@
 {
-    "name": "net.pysharp.unity",
+    "name": "net.uniton.unity",
     "version": "0.0.1",
-    "displayName": "PySharp",
+    "displayName": "Uniton",
     "description": "Python-C# Interface",
     "unity": "2020.1",
     "unityRelease": "0b5",

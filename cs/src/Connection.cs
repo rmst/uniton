@@ -15,7 +15,7 @@ using System.Linq;
 
 
 
-namespace Pysharp{
+namespace Uniton{
   class InflatedNull {}
   class DontStore {}
 
@@ -226,7 +226,7 @@ namespace Pysharp{
       else if(x is string) return Concat(BitConverter.GetBytes((int) CmdType.STRING), Encoding.UTF8.GetBytes((string) x));
       else if(x is byte[]) return Concat(BitConverter.GetBytes((int) CmdType.BYTES), (byte[]) x);
 
-      throw new ArgumentException("Object " + x + " not serializable");
+      throw new ArgumentException("Object " + ToStr(x) + " not serializable");
     }
 
     public void serialize(object x, ref ArraySegment<byte>[] sbb){
@@ -235,7 +235,7 @@ namespace Pysharp{
       else if(x is bool) {sbb[2] = getseg((int) CmdType.BOOL); sbb[3] = getseg((bool) x);}
       else if(x is string) {sbb[2] = getseg((int) CmdType.STRING); sbb[3] = getseg((string) x);}
       else if(x is byte[]) {sbb[2] = getseg((int) CmdType.BYTES); sbb[3] = getseg((byte[]) x);}
-      else throw new ArgumentException("Object " + x + " not serializable");
+      else throw new ArgumentException("Object " + ToStr(x) + " not serializable");
     }
 
     ArraySegment<byte>[] sbb = new ArraySegment<byte>[4];
@@ -311,7 +311,7 @@ namespace Pysharp{
         // sho.Add(123);
         // sho.Add(this);
 
-        Log.Print("Pysharp waiting for a connection...");  
+        Log.Print("Uniton waiting for a connection...");  
         // Program is suspended while waiting for an incoming connection.
         
         var listen = Task<Socket>.Run(() => {return listener.Accept();});
@@ -597,10 +597,10 @@ namespace Pysharp{
 
 
     public IEnumerable<Type> GetTypesInNamespace(string ns){
-      ns = (ns == "" ? null : ns);
+      ns = (ns == "" ? null : ns); // global namespace is represented by null
       return System.AppDomain.CurrentDomain.GetAssemblies()
         .SelectMany(asm => asm.GetTypes())
-        .Where(t => t.Namespace == ns);  // global namespace is represented by null
+        .Where(t => t.Namespace == ns);
     }
 
     public string[] GetTypenamesInNamespace(string ns=""){
@@ -613,6 +613,22 @@ namespace Pysharp{
       if(t == null)
         throw new Exception("Namespace '" + ns + "' has no type '" + name + "'");
       return t;
+    }
+
+    public Type[] GetTypesBelowNamespace(string name, string ns=""){
+      return System.AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(asm => asm.GetTypes())
+        .Where(t => (t.Namespace == null ? "" : t.Namespace).StartsWith(ns)) // global namespace is represented by null
+        .Where(t => t.Name == name)
+        .ToArray();
+    }
+
+    public String[] TypenamesBelowNamespace(string ns=""){
+      return System.AppDomain.CurrentDomain.GetAssemblies()
+        .SelectMany(asm => asm.GetTypes())
+        .Where(t => (t.Namespace == null ? "" : t.Namespace).StartsWith(ns)) // global namespace is represented by null
+        .Select(t => t.FullName)
+        .ToArray();
     }
 
     static string ToStr(object x, int level=0) {
