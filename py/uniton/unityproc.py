@@ -106,8 +106,8 @@ class UnityProc:
     return self.System.Diagnostics.Process.GetCurrentProcess().Id
 
   def __getattr__(self, item):
-    # return getattr(self._ns, item)
-    return self._ns.__getattr__(item)
+    return getattr(self._ns, item)
+    # return self._ns.__getattr__(item)  # Warning: this line breaks the namespace caching!
 
   def __dir__(self):
     return list(super().__dir__()) + dir(self._ns)

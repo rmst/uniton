@@ -47,6 +47,11 @@ class CsObject:
     if k.startswith('_') or k in GETATTR_BLACKLIST:
       raise AttributeError()
 
+    # from traceback import print_stack
+    # print_stack(limit=2)
+    # print('getattr', k)
+    # print("----")
+
     id = self.ue.cmd(rpc.GETMEMBER, self.ue.serialize_objs(k, self))
     return CsObject(self.ue, id)
 

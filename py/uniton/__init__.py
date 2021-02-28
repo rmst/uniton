@@ -58,20 +58,32 @@ from .unityengine import UnityEngine
 #     super().__init__()
 
 
-def _monkey_path_rlcompleter():
-  # Avoid querying every object on autocomplete in the REPL. It's silly behaviour by rlcompleter anyway.
 
-  import rlcompleter
+
+def _monkey_patch_completer():
+  # Avoid querying every object on autocomplete in the REPL.
+
   from .csobject import CsObject
   from .namespace import Namespace
 
-  def patched_getattr(obj, k):
-    if isinstance(obj, (CsObject, Namespace)):
+  def patched_getattr(object, name, default=None):
+    if isinstance(object, (CsObject, Namespace)):
       return None
+      # raise AttributeError()
+      # return getattr(object, name)
     else:
-      return getattr(obj, k)
+      return getattr(object, name, default)
 
-  rlcompleter.getattr = patched_getattr
+  try:
+    import rlcompleter
+    rlcompleter.getattr = patched_getattr
+  except:
+    pass
 
+  try:
+    from jedi.inference.compiled import access
+    access.getattr = patched_getattr
+  except:
+    pass
 
-_monkey_path_rlcompleter()
+_monkey_patch_completer()

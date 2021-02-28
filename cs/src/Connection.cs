@@ -400,6 +400,7 @@ namespace Uniton{
     // https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
     // to find extension methods we'd have to iterate all classes and look for them
     // https://stackoverflow.com/questions/299515/reflection-to-identify-extension-methods
+    // TODO: this is returning invalid members if obj a Type!
     object GetMember(string name, object obj){
       // var a = ((IEnumerable<object>)args).ToArray();
       // var rid = (int) a[0];
