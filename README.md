@@ -13,7 +13,7 @@ pip install uniton
 ### Usage
 To connect to a running Unity process do
 ```python
-from uniton import Uniton
-ps = Uniton()
+from uniton import UnityEngine
+ps = UnityEngine()
 ```
 
