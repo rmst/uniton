@@ -1,6 +1,6 @@
 
 UNITON_PUBLIC="${HOME}/dev/uniton/"
-UNITON_VERSION="0.1.2"
+UNITON_VERSION="0.1.3"
 DLL_NAME="uniton.dll"
 
 all:
@@ -11,17 +11,16 @@ landing-page:
 
 publish-landing-page:
 	# publish landing page to Github
-	git diff --quiet || (echo 'uncommitted changes - aborting'; exit 1)
 	make landing-page
 	pushd ${UNITON_PUBLIC}; git add .; git commit -m "publish"; git push; popd
 
 publish:
 	# publish to PyPi
-	git diff --quiet || (echo 'uncommitted changes - aborting'; exit 1)
+	echo ${UNITON_VERSION} > py/VERSION
+	git add .; git commit -m "v${UNITON_VERSION}"; git push
 	git tag -a v${UNITON_VERSION} -m "Published to PyPi"
 	git push --follow-tags
 
-	echo ${UNITON_VERSION} > py/VERSION
 	pushd py; make public; popd
 
 	make publish-landing-page
