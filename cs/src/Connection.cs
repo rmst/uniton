@@ -67,9 +67,6 @@ namespace Uniton{
     // Dictionary<int, object> omap = new Dictionary<int, object>();
     public List<object> sho;
 
-    public void Update (){
-      updates ++;
-    }
     
     public void step() {
       step_next = true;
@@ -179,9 +176,16 @@ namespace Uniton{
 
       //   exec_cmd(data);
       // }
-      cmd_stream.MoveNext();
+
+
+      // cmd_stream.MoveNext();
       fixed_updates ++;
 
+    }
+
+    public void Update(){
+      cmd_stream.MoveNext();
+      updates ++;
     }
 
     public IEnumerator CaptureFrames(){
@@ -401,6 +405,7 @@ namespace Uniton{
     // to find extension methods we'd have to iterate all classes and look for them
     // https://stackoverflow.com/questions/299515/reflection-to-identify-extension-methods
     // TODO: this is returning invalid members if obj a Type!
+    // TODO: some members, e.g. this.updates  are missing!
     object GetMember(string name, object obj){
       // var a = ((IEnumerable<object>)args).ToArray();
       // var rid = (int) a[0];

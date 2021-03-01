@@ -28,4 +28,3 @@ ln -sf $(pwd)/src/* /Users/simon/dev/unpy/unity/Unpy/Assets/Scripts/
 This is a quick demo of Uniton. Uniton is a framework for controlling C# programs and the Unity game engine from Python.
 
 To show you how easy it to use Uniton, I'm going to open up this example project that comes with Unity.
-
