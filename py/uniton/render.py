@@ -28,7 +28,6 @@ class QueuedRenderer:
       for i in range(render_steps+ipc_steps):
         self.render()
 
-  @property
   def delay(self):
     return self.render_steps + self.ipc_steps - 2
 
