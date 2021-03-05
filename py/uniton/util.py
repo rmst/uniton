@@ -11,3 +11,11 @@ class BrokenPromiseException(Exception):
 
 class RemoteException(Exception):
   pass
+
+
+def topy(x):
+  if isinstance(x, (list, tuple)):
+    x = [e.py for e in x]  # request all
+    return [e.wait() for e in x]  # wait all
+
+  raise AttributeError(f"Objects like {x} are not supported")

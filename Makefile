@@ -6,7 +6,7 @@ DLL_NAME="uniton.dll"
 all:
 
 landing-page:
-	cp Readme.md ${UNITON_PUBLIC}
+	cp public/Readme.md ${UNITON_PUBLIC}
 	pushd cs; NAME=${DLL_NAME} make; cp out/${DLL_NAME} ${UNITON_PUBLIC}; popd
 
 publish-landing-page:

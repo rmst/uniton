@@ -133,10 +133,16 @@ class CsObject:
     # self._con.udel(self.id)
     self.ue.delete_object(self.id)
 
+  # TODO: add more operators
+  # TODO: make operators work on C# value types (might be hard)
+  # https://stackoverflow.com/questions/11113259/how-to-call-custom-operator-with-reflection
   def __mul__(self, other):
     return self.op_Multiply(self, other)
 
-  # TODO: add more operators
+  def __add__(self, other):
+    return self.op_Addition(self, other)
+
+
 
 
 

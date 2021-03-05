@@ -20,6 +20,8 @@ w, h = 256, 128
 
 print(f"{ue.SystemInfo.supportsAsyncGPUReadback = }")
 print(f"{ue.QualitySettings.maxQueuedFrames = }")
+print(f"{ue.QualitySettings.vSyncCount = }")
+print(f"{ue.Application.targetFrameRate = }")
 
 
 def test_queue(n):

@@ -4,6 +4,7 @@ import struct
 from queue import Queue
 from threading import Thread
 from typing import Sequence
+from functools import cached_property
 
 from .csobject import CsObject
 from .protocol import rpc
@@ -54,7 +55,10 @@ class UnityProc:
 
     if path is not None:
       # TODO: find free port and set as env variable
+      # TODO: allow to set cmd line args
+      # TODO: figure out how to set -screen-height -screen-width robustly
       self._proc = subprocess.Popen([path])
+      # self._proc = subprocess.Popen([path, '-batchmode'])  # while this still renders on Mac OS it's much slower
       host = '127.0.0.1'
       port = 11001 if port is None else port
     else:
@@ -101,6 +105,16 @@ class UnityProc:
 
     # self.Uniton.Log.level = 2  # only print INFO and ERROR
 
+
+  @cached_property
+  def _null(self):
+    # TODO: probably better provide this from the c sharp side
+    return CsObject(self, id=self.cmd(rpc.NOOP, b''))
+
+  def waitall(self):
+    # TODO: this is obviously hacky
+    str(self._backend)
+
   @property
   def _pid(self):
     return self.System.Diagnostics.Process.GetCurrentProcess().Id
@@ -111,6 +125,9 @@ class UnityProc:
 
   def __dir__(self):
     return list(super().__dir__()) + dir(self._ns)
+
+  def __del__(self):
+    self.close()
 
   def close(self):
     atexit.unregister(self.close)

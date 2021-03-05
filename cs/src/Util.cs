@@ -1,8 +1,15 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using System;
+using Unity.Collections;
 
 namespace Uniton {
+
+
+  public static class Util {
+    public static object nullreference = null;
+  }
+
 
   public static class Log {
     public enum Level{
@@ -18,6 +25,95 @@ namespace Uniton {
     }
   }
 
+  public class RenderQueue{
+    AsyncGPUReadbackRequest?[] requests;  // for some reason Async... is not nullable so we need the '?'
+    byte[][] completed_frames;
+    int step = 0;
+    int size;
+    public RenderQueue(int size){
+      this.size = size;
+      this.requests = new AsyncGPUReadbackRequest?[size];
+      this.completed_frames = new byte[size][];
+    }
+
+    public byte[] Render(Camera cam){
+      cam.Render();
+      this.requests[this.step % this.size] = AsyncGPUReadback.Request(cam.targetTexture);
+      var oldest = (this.step+1) % this.size;  // the index for the oldest request
+
+      for(int i=0; i < this.size; i++){
+        if(requests[i].HasValue){
+          var req = requests[i].Value;  // .Value comes from Nullable<>
+          if(i == oldest)
+            req.WaitForCompletion();
+          else
+            req.Update();
+          if (req.hasError){
+            throw new Exception("GPU readback error");
+          } else if (req.done) {
+            var res = req.GetData<byte>().ToArray();
+            this.completed_frames[i] = res;
+            this.requests[i] = null;
+          }
+        }
+      }
+
+      var frame = this.completed_frames[oldest];
+
+      this.step += 1;
+      return frame is null ? new byte[]{} : frame;  // because null not serializable atm
+    }
+  }
+
+    public class RenderQueue2{
+      // not faster than normal RenderQueue
+    AsyncGPUReadbackRequest?[] requests;  // for some reason Async... is not nullable so we need the '?'
+    byte[][] completed_frames;
+    int step = 0;
+    int size;
+    public RenderQueue2(int size, int framesize){
+      this.size = size;
+      this.requests = new AsyncGPUReadbackRequest?[size];
+      this.completed_frames = new byte[size][];
+      for(var i=0; i < this.completed_frames.Length; i++)
+        this.completed_frames[i] = new byte[framesize];
+    }
+
+    public byte[] Render(Camera cam){
+      cam.Render();
+      this.requests[this.step % this.size] = AsyncGPUReadback.Request(cam.targetTexture);
+      var oldest = (this.step+1) % this.size;  // the index for the oldest request
+
+      for(int i=0; i < this.size; i++){
+        if(requests[i].HasValue){
+          var req = requests[i].Value;  // .Value comes from Nullable<>
+          if(i == oldest)
+            req.WaitForCompletion();
+          else
+            req.Update();
+          if (req.hasError){
+            throw new Exception("GPU readback error");
+          } else if (req.done) {
+            // req.GetData<byte>().CopyTo(this.completed_frames[i]);
+            var na = req.GetData<byte>();
+
+            // convert RGBA to RGB
+            for(var j=0; j < na.Length/4; j++){
+              NativeArray<byte>.Copy(na, j*4, this.completed_frames[i], j*3, 3);
+            }
+            
+            na.Dispose();
+            this.requests[i] = null;
+          }
+        }
+      }
+
+      var frame = this.completed_frames[oldest];
+
+      this.step += 1;
+      return frame;
+    }
+  }
 
   public class RenderTools {
     // Camera basics
@@ -63,17 +159,18 @@ namespace Uniton {
 
     public static byte[] WaitReadbackRequest(AsyncGPUReadbackRequest req){
       req.WaitForCompletion();
+      // Warning: This will fail if this method is called too late. The result is only available for one frame
       if (req.hasError){
-        Log.Print("GPU readback error", Log.Level.ERROR);
+        // Log.Print("GPU readback error", Log.Level.ERROR);
+        throw new Exception("GPU readback error");
       } else if (req.done) {
         var res = req.GetData<byte>().ToArray();
         return res;
       }
-      throw new Exception();
+      throw new Exception("Strange GPU readback error");
     }
 
     public static byte[] PollReadbackRequest(AsyncGPUReadbackRequest req){
-      // req.WaitForCompletion();
       req.Update();
       if (req.hasError){
         Log.Print("GPU readback error", Log.Level.ERROR);

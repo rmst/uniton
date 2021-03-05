@@ -230,7 +230,7 @@ namespace Uniton{
       else if(x is string) return Concat(BitConverter.GetBytes((int) CmdType.STRING), Encoding.UTF8.GetBytes((string) x));
       else if(x is byte[]) return Concat(BitConverter.GetBytes((int) CmdType.BYTES), (byte[]) x);
 
-      throw new ArgumentException("Object " + ToStr(x) + " not serializable");
+      throw new ArgumentException("Object " + ToStr(x) + " of type '" + x.GetType().FullName + "' is not serializable");
     }
 
     public void serialize(object x, ref ArraySegment<byte>[] sbb){
@@ -527,7 +527,7 @@ namespace Uniton{
 
       }
       catch (MissingMethodException){
-        throw new System.ArgumentException(ToStr(callable) + " could not be called with " + ToStr(args));
+        throw new System.ArgumentException(ToStr(callable) + " could not be called with arguments: " + string.Join(", ", args.Select(a => ToStr(a))));
       }
 
       // return AddObject(rid, ret);
@@ -610,9 +610,16 @@ namespace Uniton{
     }
 
     public string[] GetTypenamesInNamespace(string ns=""){
-      return GetTypesInNamespace(ns).Select(t => t.Name).ToArray();
+      return GetTypesInNamespace(ns).Select(t => t.FullName).ToArray();
     }
 
+    public Type GetTypeByFullName(string n){
+      return System.AppDomain.CurrentDomain.GetAssemblies()
+      .SelectMany(asm => asm.GetTypes())
+      .First(t => t.FullName == n);
+    }
+
+    // depreciated
     public Type GetTypeInNamespace(string name, string ns=""){
       // TODO: make similar method for struct, class, enum, delegate and interface?
       Type t = GetTypesInNamespace(ns).FirstOrDefault(t => t.Name == name);
@@ -621,14 +628,16 @@ namespace Uniton{
       return t;
     }
 
+    // depreciated
     public Type[] GetTypesBelowNamespace(string name, string ns=""){
       return System.AppDomain.CurrentDomain.GetAssemblies()
         .SelectMany(asm => asm.GetTypes())
         .Where(t => (t.Namespace == null ? "" : t.Namespace).StartsWith(ns)) // global namespace is represented by null
-        .Where(t => t.Name == name)
+        .Where(t => t.Name == name)  // TODO: the Name attribute is flawed use FullName
         .ToArray();
     }
 
+    // depreciated
     public String[] TypenamesBelowNamespace(string ns=""){
       return System.AppDomain.CurrentDomain.GetAssemblies()
         .SelectMany(asm => asm.GetTypes())

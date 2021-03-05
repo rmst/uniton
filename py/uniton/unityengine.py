@@ -1,3 +1,4 @@
+from functools import cached_property
 from .unityproc import UnityProc
 
 """
@@ -25,30 +26,52 @@ Note that generally `Time.timeScale` should be set to `100` to allow the engine 
 
 # noinspection PyProtectedMember
 class UnityEngine(UnityProc):
-  _default_timescales = (1., 0.02, 0.)  # the real values will be set on stepping=True
+  _default_settings = (1., 0.02, 0., 1)  # the real values will be set on stepping=True
 
   # def __init__(self, ue):
   #   super().__init__(ue, "UnityEngine")
 
   def pause(self):
-    self._default_timescales = (
+    self._default_settings = (
       self.Time.timeScale,
       self.Time.fixedDeltaTime,
       self.Time.captureDeltaTime,
+      self.QualitySettings.vSyncCount,
     )
     self.Time.timeScale = 100  # Warning: 100 is the max value. if higher Unity will silently reject the change!
-    self.Time.fixedDeltaTime = 0.02  # game time advance for every FixedUpdate
-    self.Time.captureDeltaTime = 0.02 / 100  # rendering at 25 frames per game second, see comment above
+    self.QualitySettings.vSyncCount = 0  # otherwise Update can be artificially slowed down to match the display refresh rate
+    self.time._update_engine_timing()
+
     self._backend.setStepping(True)
 
   def paused(self):
     return self._backend.stepping.py()
 
   def resume(self):
-    (self.Time.timeScale, self.Time.fixedDeltaTime, self.Time.captureDeltaTime) = self._default_timescales
+    (
+      self.Time.timeScale,
+      self.Time.fixedDeltaTime,
+      self.Time.captureDeltaTime,
+      self.QualitySettings.vSyncCount,
+    ) = self._default_settings
+
     self._backend.setStepping(False)
 
   def step(self):
     if "_step" not in vars(self):
       self._step = self._backend.step
     self._step()
+
+  @cached_property
+  def time(self):
+    from .timing import Time
+    return Time(self)
+
+  @cached_property
+  def scene(self):
+    from .scene import Scene
+    active_scene = self.SceneManagement.SceneManager.GetActiveScene()
+    return Scene(active_scene)
+
+
+

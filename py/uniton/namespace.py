@@ -1,4 +1,5 @@
-from functools import cached_property
+from functools import lru_cache
+from .util import topy
 
 
 # noinspection PyProtectedMember
@@ -10,20 +11,31 @@ class Namespace:
     self._ns = ns
 
   def __getattr__(self, k):
+
+    # this shit below is necessary because somehow @property and @cached_property is interfering with __getattr__
+    if k == '_namespaces':
+      self._namespaces = self._get_namespaces()
+      return self._namespaces
+    if k == '_typenames':
+      self._typenames = self._get_typenames()
+      return self._typenames
+    # -----
+
     if (
       k in ("_ipython_canary_method_should_not_exist_", "_repr_mimebundle_")  # this is needed for the ipython console
       or k.startswith('_')  # probably Python internal
     ):
-      raise AttributeError()
+      raise AttributeError(f'{self} does not have a property called {k}')
 
     # print("gettr", self._ns, k)
 
+    full_name = self._ns + '.' + k if self._ns else k
+
     if k in self._namespaces:
-      ns = self._ns + '.' + k if self._ns else k
-      v = Namespace(self.ue, ns)
+      v = Namespace(self.ue, full_name)
     elif k in self._typenames:
       # TODO: make class CsType and cache methods?
-      v = self.ue._backend.GetTypeInNamespace(k, self._ns)
+      v = self.ue._backend.GetTypeByFullName(full_name)
     elif self._ns == "" and k in self.UnityEngine._namespaces + self.UnityEngine._typenames:
       v = getattr(self.UnityEngine, k)
     else:
@@ -36,8 +48,7 @@ class Namespace:
       vars(self)[k] = v  # next time __getattr__ won't be called again
     return v
 
-  @cached_property
-  def _namespaces(self):
+  def _get_namespaces(self):
     x = self.ue._backend.GetNamespaces(self._ns)  # C# <System.String[]>
     x = [e.py for e in x]
     x = (e.wait() for e in x)
@@ -45,11 +56,10 @@ class Namespace:
     x = (e for e in x if e.isidentifier())
     return list(set(x))
 
-  @cached_property
-  def _typenames(self):
+  def _get_typenames(self):
     x = self.ue._backend.GetTypenamesInNamespace(self._ns)
-    x = [e.py for e in x]
-    x = (e.wait() for e in x)
+    x = topy(list(x))
+    x = (e.split('.')[-1] for e in x)
     x = (e for e in x if e.isidentifier())
     return list(set(x))
 
