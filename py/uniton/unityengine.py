@@ -67,7 +67,7 @@ class UnityEngine(UnityProc):
     from .timing import Time
     return Time(self)
 
-  @cached_property
+  @property  # don't cache as the active scene could change!
   def scene(self):
     from .scene import Scene
     active_scene = self.SceneManagement.SceneManager.GetActiveScene()

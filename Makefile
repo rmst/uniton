@@ -1,6 +1,6 @@
 
 UNITON_PUBLIC="${HOME}/dev/uniton"
-UNITON_VERSION="0.1.7"
+UNITON_VERSION="0.1.8"
 DLL_NAME="uniton.dll"
 
 all:
