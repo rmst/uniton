@@ -283,7 +283,7 @@ class UnityProc:
     elif isinstance(x, CsObject):
       return x
 
-    elif '_wrapped_cs_object' in vars(x):
+    elif hasattr(x, '_wrapped_cs_object'):
       return x._wrapped_cs_object
 
     elif isinstance(x, bytes):
