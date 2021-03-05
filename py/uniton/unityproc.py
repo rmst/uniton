@@ -255,7 +255,7 @@ class UnityProc:
   def serialize_objs(self, *args):  # TODO: rename to serialize_obj_ids
     # important: we need to create all RObjects and only afterwards query the ids
     # if we immediatly get the ids and then forget about each RObject, they will be garbage collected and ids might be reused
-    obj = tuple(e if isinstance(e, CsObject) else self.tocs(e) for e in
+    obj = tuple(self.tocs(e) for e in
                 args)  # this can't be a generator because of the above reason
     ids = (e.id for e in obj)
     data = b"".join(SHOBJ.pack(id) for id in ids)
@@ -281,7 +281,10 @@ class UnityProc:
     # elif x is None:
     #   return rpc.Value(null=rpc.Null())
     elif isinstance(x, CsObject):
-      raise AttributeError()  # TODO: copy on unity side
+      return x
+
+    elif '_wrapped_cs_object' in vars(x):
+      return x._wrapped_cs_object
 
     elif isinstance(x, bytes):
       id = self.cmd(rpc.BYTES, x)

@@ -20,6 +20,7 @@ class Scene:
   """
   def __init__(self, scene):
     self._scene = scene
+    self._wrapped_cs_object = scene
 
   def __getattr__(self, item):
     if item.startswith('_') or item in GETATTR_BLACKLIST:
@@ -54,7 +55,8 @@ class GameObject:
   _CS_GAMEOBJECT_MEMBERS = ['SetActive', 'transform']  # add all
   def __init__(self, go):
     self._go = go
-
+    self._wrapped_cs_object = go
+    
   def __getattr__(self, item):
     """
     this is convenient but really slow
