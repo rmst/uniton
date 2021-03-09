@@ -7,12 +7,12 @@ Uniton is a framework to control the Unity game engine from Python. Here is a th
 
 
 ### Features
-- [x] naturally interact with all C# objects, functions, classes
+- [x] interact live with all C# objects, functions, classes
 - [x] full autocomplete and inspection for all C# objects (live coding)
 - [x] fast, asynchronous execution
 - [x] precise control over game time
 - [x] faster-than-real-time rendering and simulation
-
+- [x] standalone package, no required dependencies
 
 ### Install
 In any Unity project, drop the [uniton.dll](https://github.com/rmst/uniton/raw/main/uniton.dll) into the project's `Assets` directory.

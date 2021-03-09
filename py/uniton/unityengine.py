@@ -1,4 +1,5 @@
-from functools import cached_property
+
+from functools import lru_cache
 from .unityproc import UnityProc
 
 """
@@ -62,7 +63,8 @@ class UnityEngine(UnityProc):
       self._step = self._backend.step
     self._step()
 
-  @cached_property
+  @property
+  @lru_cache(maxsize=None)
   def time(self):
     from .timing import Time
     return Time(self)

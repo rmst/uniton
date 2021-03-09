@@ -4,7 +4,7 @@ import struct
 from queue import Queue
 from threading import Thread
 from typing import Sequence
-from functools import cached_property
+from functools import lru_cache
 
 from .csobject import CsObject
 from .protocol import rpc
@@ -89,7 +89,14 @@ class UnityProc:
     remote_version, = struct.unpack('i', recvall(self._sock, 4))
 
     if remote_version not in rpc.compatible_versions:
+      # TODO: do better versioning
       raise AttributeError(f"Remote version {remote_version} is not a compatible version. Must be in {rpc.compatible_versions}")
+      import urllib.request, json
+      with urllib.request.urlopen("https://pypi.org/pypi/uniton/json") as url:
+        data = json.loads(url.read().decode())
+        all_versions = data["info"]["releases"].keys()
+        # TODO: work in progress
+
 
     # init object management
     self._garbage_objects = []
@@ -105,8 +112,8 @@ class UnityProc:
 
     # self.Uniton.Log.level = 2  # only print INFO and ERROR
 
-
-  @cached_property
+  @property
+  @lru_cache(maxsize=None)
   def _null(self):
     # TODO: probably better provide this from the c sharp side
     return CsObject(self, id=self.cmd(rpc.NOOP, b''))

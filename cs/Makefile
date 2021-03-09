@@ -13,3 +13,4 @@ all:
 test:
 	ln -sf ${DIR}/src/* /Users/simon/dev/unpy/unity/Unpy/Assets/Scripts/
 	ln -sf ${DIR}/src/* /Users/simon/dev/UnityKart3/Assets/
+	ln -sf ${DIR}/src/* /Users/simon/dev/ue/temple/Assets/

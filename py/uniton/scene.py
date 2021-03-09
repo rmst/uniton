@@ -52,11 +52,120 @@ def _go_names(gos):
 
 
 class GameObject:
-  _CS_GAMEOBJECT_MEMBERS = ['SetActive', 'transform']  # add all
+  _CS_GAMEOBJECT_MEMBERS = [
+    'SetActive',
+    'isStatic',
+    # 'transform',  # manually handled
+    # 'ToString',
+    'GetInstanceID',
+    'activeSelf',
+    'GetComponent',
+    'scene',
+    'tag',
+    'GetType',
+    'activeInHierarchy',
+    'active',
+    'Equals',
+    'CreatePrimitive',
+    'GetHashCode',
+    'GetComponentsInChildren',
+    'GetComponentInParent',
+    'AddComponent',
+    'FindGameObjectsWithTag',
+    'GetComponents',
+    'FindGameObjectWithTag',
+    'hideFlags',
+    'CompareTag',
+    'name',
+    'SetActiveRecursively',
+    'Find',
+    'GetComponentsInParent',
+    'SendMessageUpwards',
+    'layer',
+    'GetComponentInChildren',
+    'SendMessage',
+    'sceneCullingMask',
+    'FindWithTag',
+    # 'gameObject',  # what is this?
+    'TryGetComponent',
+    'BroadcastMessage',
+  ]
+
+  _CS_TRANSFORM_MEMBERS = [
+    # 'Equals',
+    'forward',
+    'RotateAroundLocal',
+    'GetChild',
+    'FindChild',
+    'right',
+    'GetComponentsInChildren',
+    'tag',
+    'GetInstanceID',
+    'GetEnumerator',
+    # 'gameObject',
+    'TransformVector',
+    'GetComponents',
+    'hideFlags',
+    # 'GetType',
+    'GetComponentInParent',
+    'up',
+    'SetAsFirstSibling',
+    'localToWorldMatrix',
+    # 'transform',
+    'SendMessageUpwards',
+    'DetachChildren',
+    'position',
+    'hierarchyCapacity',
+    'parent',
+    'GetComponent',
+    'InverseTransformDirection',
+    'hasChanged',
+    'localScale',
+    'RotateAround',
+    'SendMessage',
+    'LookAt',
+    'SetParent',
+    'Rotate',
+    # 'ToString',
+    'eulerAngles',
+    'GetSiblingIndex',
+    'Translate',
+    'TransformDirection',
+    'rotation',
+    'CompareTag',
+    # 'GetHashCode',
+    'GetChildCount',
+    'InverseTransformPoint',
+    'GetComponentsInParent',
+    'BroadcastMessage',
+    'localEulerAngles',
+    'lossyScale',
+    'root',
+    'hierarchyCount',
+    'worldToLocalMatrix',
+    'InverseTransformVector',
+    'Find',
+    'IsChildOf',
+    'TransformPoint',
+    'TryGetComponent',
+    'SetSiblingIndex',
+    # 'name',
+    'localPosition',
+    'SetAsLastSibling',
+    'GetComponentInChildren',
+    'childCount',
+    'localRotation',
+    'SetPositionAndRotation',
+  ]
+
   def __init__(self, go):
     self._go = go
     self._wrapped_cs_object = go
-    
+
+    # Transform and GameObject should be the same class: https://forum.unity.com/threads/strange-question-why-are-there-separate-transform-and-gameobject-classes.468451/
+    # we combine them here
+    self.transform = self._go.transform
+
   def __getattr__(self, item):
     """
     this is convenient but really slow
@@ -66,6 +175,9 @@ class GameObject:
 
     if item in GameObject._CS_GAMEOBJECT_MEMBERS:
       return getattr(self._go, item)
+
+    if item in GameObject._CS_TRANSFORM_MEMBERS:
+      return getattr(self._go.transform, item)
 
     cos = self._components()
     co_names = topy([co.GetType().Name for co in cos])
@@ -80,7 +192,7 @@ class GameObject:
       idx = go_names.index(item)
       return GameObject(gos[idx])
 
-    raise AttributeError(f"'{item}' is neither a component nor a child of {self}")
+    raise AttributeError(f"'{item}' is neither a component, child nor attribute of {self}")
 
   def _children(self):
     trans = self._go.transform
@@ -95,13 +207,15 @@ class GameObject:
     cos = [co for co, isnull in zip(cos, isnulls) if not isnull]
     return cos
 
-
   def __dir__(self):
     co_names = topy([co.GetType().Name for co in self._components()])
     go_names = _go_names(self._children())
 
     names = [n for n in (co_names + go_names) if n.isidentifier()]
-    return names + GameObject._CS_GAMEOBJECT_MEMBERS + super().__dir__()
+    names += GameObject._CS_GAMEOBJECT_MEMBERS
+    names += GameObject._CS_TRANSFORM_MEMBERS
+    names += super().__dir__()
+    return names
 
   def __repr__(self):
     return f"GameObject '{self._go.name.py()}'"
