@@ -2,7 +2,14 @@ import atexit
 import subprocess
 
 # from .unityproc import UnityProc
+from os.path import dirname
+
+from . import protocol
+__version__ = protocol.UNITON_VERSION
+
 from .unityengine import UnityEngine
+
+
 
 #
 # class Uniton(Namespace):

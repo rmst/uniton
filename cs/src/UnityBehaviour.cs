@@ -45,7 +45,7 @@ public class UnityBehaviour : MonoBehaviour {
   Connection service;
   // Use this for initialization
   void Start () {
-
+    Debug.Log("" + Assembly.GetExecutingAssembly().Location);
 
     // disp = new Dispatcher();
     service = new Connection();

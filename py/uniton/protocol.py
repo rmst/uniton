@@ -1,5 +1,7 @@
+# This is a generated file. Do not modify manually.
 
-# TODO: all of the protocol should be in a JSON file
+UNITON_VERSION = "0.2.0"
+MAGIC_NUMBER = 1283621
 
 class rpc:
 
@@ -17,4 +19,4 @@ class rpc:
   BYTES = 11
   SETMEMBER = 12
 
-  compatible_versions = (1,)
+

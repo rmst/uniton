@@ -1,14 +1,26 @@
 from setuptools import setup, find_packages
+from os.path import dirname, join
 
 import sys
 if sys.version_info < (3, 6):
   sys.exit('Sorry, Python < 3.6 is not supported')
 
-VERSION = open('VERSION', 'r').read()
+
+def import_directly(path, name=None):
+    import importlib.util
+    from os.path import basename, splitext
+    if not name:
+        name = splitext(basename(path))[0]
+    spec = importlib.util.spec_from_file_location(name, path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+protocol = import_directly(join(dirname(__file__), "uniton", "protocol.py"))
 
 setup(
     name='uniton',
-    version=VERSION,
+    version=protocol.UNITON_VERSION,
     description='Control Unity from Python',
     url='https://github.com/rmst/uniton',
     author='Simon Ramstedt',

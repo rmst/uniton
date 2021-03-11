@@ -7,7 +7,7 @@ from typing import Sequence
 from functools import lru_cache
 
 from .csobject import CsObject
-from .protocol import rpc
+from .protocol import rpc, MAGIC_NUMBER, UNITON_VERSION
 from .util import BrokenPromiseException
 
 TLIST = (
@@ -86,16 +86,24 @@ class UnityProc:
     self._sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
     # version compatibility check
-    remote_version, = struct.unpack('i', recvall(self._sock, 4))
+    magic_number, = struct.unpack('i', recvall(self._sock, 4))
+    if magic_number != MAGIC_NUMBER:
+      raise ConnectionError("Could not connect.")
 
-    if remote_version not in rpc.compatible_versions:
-      # TODO: do better versioning
-      raise AttributeError(f"Remote version {remote_version} is not a compatible version. Must be in {rpc.compatible_versions}")
-      import urllib.request, json
-      with urllib.request.urlopen("https://pypi.org/pypi/uniton/json") as url:
-        data = json.loads(url.read().decode())
-        all_versions = data["info"]["releases"].keys()
-        # TODO: work in progress
+
+    remote_version_tuple = struct.unpack('iii', recvall(self._sock, 4 * 3))
+    self._remote_version = ".".join(str(x) for x in remote_version_tuple)
+    local_version_macro = ".".join(UNITON_VERSION.split(".")[:2])
+    remote_version_macro = ".".join(self._remote_version.split(".")[:2])
+    if remote_version_macro != local_version_macro:
+      # try:
+      #   import urllib.request, json
+      #   with urllib.request.urlopen("https://pypi.org/pypi/uniton/json") as url:
+      #     data = json.loads(url.read().decode())
+      #     all_versions = data["info"]["releases"].keys()
+      #     best_compatible_local_version = sorted(v for v in all_versions if v.startswith(".".join(remote_version_tuple[:2])))[-1]
+      # finally:
+      raise ConnectionError(f'Remote Uniton version {self._remote_version} is not compatible with local version {UNITON_VERSION}. Change remote version to {local_version_macro}.* or local version to {remote_version_macro}.* via\n\npip install "uniton=={remote_version_macro}.*" --force-reinstall\n')
 
 
     # init object management
@@ -176,7 +184,7 @@ class UnityProc:
 
         # get data
         d = recvall(self._sock, n)
-        if d is None: break
+        if d is None: break  # TODO: shouldn't this be an error?
         exc, = struct.unpack_from('i', d, 0)
         if exc:
           # raise RemoteException(self.deserialize(d[4:]))

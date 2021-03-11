@@ -12,8 +12,7 @@ using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Net;
 using System.Linq;
-
-
+using UnityEditor.SceneManagement;
 
 namespace Uniton{
   class InflatedNull {}
@@ -40,6 +39,7 @@ namespace Uniton{
 
   class Connection{
 
+    UnityEditor.SceneManagement.EditorSceneManager stest;
 
     void Start(){
       Init();
@@ -346,7 +346,13 @@ namespace Uniton{
         // Set the timeout for synchronous send methods to 1 second (1000 milliseconds.)			
         handler.SendTimeout = 1000;
 
-        handler.Send(BitConverter.GetBytes(RPC_VERSION));
+        handler.Send(BitConverter.GetBytes(Protocol.MAGIC_NUMBER));
+
+        // send version
+        var v = Protocol.UNITON_VERSION.Split('.').Select(x => Int32.Parse(x)).ToArray();
+        handler.Send(BitConverter.GetBytes(v[0]));
+        handler.Send(BitConverter.GetBytes(v[1]));
+        handler.Send(BitConverter.GetBytes(v[2]));
 
         byte[] msg_len_buffer = new byte[4];
     
