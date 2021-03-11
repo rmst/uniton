@@ -5,18 +5,25 @@ Uniton is a framework to control the Unity game engine from Python. Here is a th
 [![Uniton Demo Video](./res/yt_thumbnail.png)](https://www.youtube.com/watch?v=FIpt2yv623k)
 
 
-
 ### Features
-- [x] interact live with all C# objects, functions, classes
-- [x] full autocomplete and inspection for all C# objects (live coding)
-- [x] fast, asynchronous execution
-- [x] precise control over game time
-- [x] faster-than-real-time rendering and simulation
-- [x] standalone package, no required dependencies
+
+[comment]: <> (Edit the table below via https://www.tablesgenerator.com/markdown_tables)
+
+|                                                                   	|                                      Uniton                                      	|                                                            Uniton Plus                                                           	|                                                            Uniton Pro                                                            	|
+|-------------------------------------------------------------------	|:--------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------------------------------------------------------------:	|:--------------------------------------------------------------------------------------------------------------------------------:	|
+|                                                                   	|                                       Free                                       	| [![Sponsor Uniton](https://img.shields.io/static/v1?label=Sponsor&message=Uniton&logo=GitHub)](https://github.com/sponsors/rmst) 	| [![Sponsor Uniton](https://img.shields.io/static/v1?label=Sponsor&message=Uniton&logo=GitHub)](https://github.com/sponsors/rmst) 	|
+| Interact live with all C# objects, functions, classes             	|                                         ☕️                                        	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Full autocomplete and inspection for all C# objects (live coding) 	|                                         ☕️                                        	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Fast, asynchronous execution                                      	|                                         ☕️                                        	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Precise control over game time                                    	|                                         ☕️                                        	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Faster-than-real-time rendering and simulation                    	|                                         ☕️                                        	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Standalone package, no extra dependencies required                	|                                         ☕️                                        	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Build standalone applications that everyone can use               	|                                                                                  	|                                                                 🔥                                                                	|                                                                 💥                                                                	|
+| Build apps in which everyone can import `.obj` and `.urdf` models 	|                                                                                  	|                                                                                                                                  	|                                                                 💥                                                                	|
+| Install simply by dropping into your Unity Assets directory       	| [uniton.dll](https://github.com/rmst/uniton/releases/latest/download/uniton.dll) 	|               [uniton-plus.dll](https://github.com/uniton-dev/uniton-plus/releases/latest/download/uniton-plus.dll)              	|                [uniton-pro.dll](https://github.com/uniton-dev/uniton-pro/releases/latest/download/uniton-pro.dll)                	|
+
 
 ### Install
-In any Unity project, drop the [uniton dll](https://github.com/rmst/uniton/releases/latest/download/uniton.dll) into the project's `Assets` directory.
-
 Install the Python package via `pip install uniton`.
 
 
