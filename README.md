@@ -15,7 +15,7 @@ Uniton is a framework to control the Unity game engine from Python. Here is a th
 - [x] standalone package, no required dependencies
 
 ### Install
-In any Unity project, drop the [uniton.dll](https://github.com/rmst/uniton/raw/main/uniton.dll) into the project's `Assets` directory.
+In any Unity project, drop the [uniton dll](https://github.com/rmst/uniton/releases/latest/download/uniton.dll) into the project's `Assets` directory.
 
 Install the Python package via `pip install uniton`.
 
