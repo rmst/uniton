@@ -8,7 +8,7 @@
 <img src="./res/screenshot1.png" width=49% style="padding: 0%;"/>
 <a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png" width=50% style="padding: 0%;"/></a>
 </div>
-<br><br>
+<br>
 
 ### Features
 
@@ -121,8 +121,8 @@ renderer = QueuedRenderer(ue.scene.Main_Camera.Camera, width=512, height=256, re
 frame = render.render()
 ```
 
-### How does Uniton work?
-
+### How Uniton Works
+Uniton creates placeholder objects for C# objects and functions. When a placeholder C# function is called from Python it will immediately return a new placeholder for the return value. This new placeholder object can be immediately worked with. Should the C# function throw an exception such that the actual return value never materializes, then Uniton will throw a delayed exception in Python. Attribute and method lookups on placeholder objects work the same way, as these lookups are also just functions calls internally.
 
 
 ### Limitations
@@ -131,6 +131,6 @@ frame = render.render()
 - There is currently no documentation beyond this readme 
 
 
-###License
-Uniton is currently only partially open-source (https://pypi.org/project/uniton/). I might open-source all of it eventually. In the meantime, if you need access to the source code, please contact me at simonramstedt+uniton@gmail.com. At least the base version of Uniton will always be free. 
+### License
+Uniton is currently only partially open-source (https://pypi.org/project/uniton/). I might open-source all of it eventually. In the meantime, if you need access to the source code, please contact me at simonramstedt+uniton@gmail.com. Basic Uniton will always be free to use. 
 
