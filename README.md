@@ -4,13 +4,9 @@
 
 [comment]: <> ([![]&#40;./res/yt_thumbnail.png&#41;]&#40;https://www.youtube.com/watch?v=FIpt2yv623k&#41;)
 
-<div style="width:100%; display: flex; flex-direction: row; justify-content: space-between;">
-  <div style="width: 49%;">
-    <img src="./res/screenshot1.png"/>
-  </div>
-  <div style="width: 49%;">
-  <a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png"/></a>
-  </div>
+<div>
+<img src="./res/screenshot1.png" width=49% style="padding: 0%;"/>
+<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png" width=50% style="padding: 0%;"/></a>
 </div>
 <br><br>
 
