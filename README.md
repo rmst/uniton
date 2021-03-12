@@ -6,10 +6,10 @@
 
 <div style="width:100%; display: flex; flex-direction: row; justify-content: space-between;">
   <div style="width: 49%;">
-    <img src="./res/screenshot1.png" width=100%/>
+    <img src="./res/screenshot1.png"/>
   </div>
   <div style="width: 49%;">
-  <a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png" width=100% /></a>
+  <a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png"/></a>
   </div>
 </div>
 <br><br>
