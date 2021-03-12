@@ -34,7 +34,7 @@ pip install uniton
 ```
 
 
-To launch and connect to a Uniton app do
+#### To launch and connect to a Uniton app do
 ```python
 import uniton
 ue = uniton.UnityEngine(path='path/to/binary')
@@ -46,15 +46,16 @@ ue = uniton.examples.KartGame()
 ue = uniton.examples.Temple()
 ```
 
-To connect to a Unity editor or to a running standalone app do
+#### To connect to a Unity editor or to a running standalone app do
 ```python
 ue = uniton.UnityEngine()
 
-# Alternatively, to connect to remote Uniton app do, e.g.
+# Alternatively, to connect to a remote Uniton app do, e.g.
 ue = uniton.UnityEngine(host='192.168.1.101', port=10001)
 
-# The remote Uniton app can been launched via, e.g. 'HOST="0.0.0.0" PORT=10001 path/to/binary'
-
+# The remote Uniton app can been launched via, e.g. 'UNITONHOST="0.0.0.0" UNITONPORT=10001 path/to/binary'
+# Warning: UNITONHOST="0.0.0.0" should only ever be used in a private and secure network!
+# It theoretically allows everyone on the network to control the host.
 ```
 
 #### Control time via
@@ -121,7 +122,7 @@ renderer = QueuedRenderer(ue.scene.Main_Camera.Camera, width=512, height=256, re
 frame = render.render()
 ```
 
-### How Uniton Works
+### How does Uniton work?
 Uniton creates placeholder objects for C# objects and functions. When a placeholder C# function is called from Python it will immediately return a new placeholder for the return value. This new placeholder object can be immediately worked with. Should the C# function throw an exception such that the actual return value never materializes, then Uniton will throw a delayed exception in Python. Attribute and method lookups on placeholder objects work the same way, as these lookups are also just functions calls internally.
 
 
