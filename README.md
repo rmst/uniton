@@ -4,9 +4,9 @@
 
 [comment]: <> ([![]&#40;./res/yt_thumbnail.png&#41;]&#40;https://www.youtube.com/watch?v=FIpt2yv623k&#41;)
 
-<div>
+<div style="width:100%">
 <img src="./res/screenshot1.png" width=46% style="padding: 1.5%;"/>
-<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png" width=46% style="padding: 1.5%;"/></a>
+<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png" width=46.2% style="padding: 1.5%;"/></a>
 </div>
 <br><br>
 
