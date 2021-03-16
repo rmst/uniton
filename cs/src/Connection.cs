@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Text;  // Encoding
-
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Reflection;
@@ -12,7 +11,6 @@ using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Net;
 using System.Linq;
-using UnityEditor.SceneManagement;
 
 namespace Uniton{
   class InflatedNull {}
@@ -38,8 +36,6 @@ namespace Uniton{
 
 
   class Connection{
-
-    UnityEditor.SceneManagement.EditorSceneManager stest;
 
     void Start(){
       Init();
@@ -281,7 +277,6 @@ namespace Uniton{
       // https://stackoverflow.com/questions/2661764/how-to-check-if-a-socket-is-connected-disconnected-in-c
       return !(socket.Poll(1, SelectMode.SelectRead) && socket.Available == 0);
     }
-    
 
     // TODO: this should be a class
     public IEnumerable<int> CmdStream(){
@@ -291,13 +286,16 @@ namespace Uniton{
         // IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());  
         // IPAddress ipAddress = ipHostInfo.AddressList[0]; 
 
-        //TODO: make this configurable!
-        var ipAddress = IPAddress.Parse("127.0.0.1");
-        int port = Application.isEditor ? 11000 : 11001;
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port); 
-        // Create a TCP/IP socket.  
-        Socket listener = new Socket(ipAddress.AddressFamily,  
-          SocketType.Stream, ProtocolType.Tcp );  
+        var hostStringOrNull = System.Environment.GetEnvironmentVariable("UNITONHOST");
+        var hostString = String.IsNullOrEmpty(hostStringOrNull) ? "127.0.0.1" : hostStringOrNull;
+        var host = IPAddress.Parse(hostString);
+
+        var portStringOrNull = System.Environment.GetEnvironmentVariable("UNITONPORT");
+        var portString = String.IsNullOrEmpty(portStringOrNull) ? "11000" : portStringOrNull;
+        var port = Int32.Parse(portString);
+        
+        IPEndPoint localEndPoint = new IPEndPoint(host, port); 
+        Socket listener = new Socket(host.AddressFamily, SocketType.Stream, ProtocolType.Tcp);  
 
         // Bind the socket to the local endpoint and   
         // listen for incoming connections.  
@@ -349,7 +347,7 @@ namespace Uniton{
         handler.Send(BitConverter.GetBytes(Protocol.MAGIC_NUMBER));
 
         // send version
-        var v = Protocol.UNITON_VERSION.Split('.').Select(x => Int32.Parse(x)).ToArray();
+        var v = Protocol.UNITON_VERSION.Split(".".ToCharArray()).Select(x => Int32.Parse(x)).ToArray();
         handler.Send(BitConverter.GetBytes(v[0]));
         handler.Send(BitConverter.GetBytes(v[1]));
         handler.Send(BitConverter.GetBytes(v[2]));

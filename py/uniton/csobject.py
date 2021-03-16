@@ -1,7 +1,7 @@
 import threading
 
 from uniton.protocol import rpc
-from uniton.util import removeprefix, BrokenPromiseException, RemoteException
+from uniton.csutil import removeprefix, BrokenPromiseException, RemoteException
 
 
 class Promise:

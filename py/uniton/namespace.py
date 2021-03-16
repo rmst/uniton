@@ -1,5 +1,5 @@
 from functools import lru_cache
-from .util import topy
+from .csutil import topy
 
 
 # noinspection PyProtectedMember

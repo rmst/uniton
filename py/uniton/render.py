@@ -31,7 +31,7 @@ class QueuedRenderer:
   def delay(self):
     return self.render_steps + self.ipc_steps - 2
 
-  def render(self):
+  def render_raw(self):
     original_tex = self.camera.targetTexture
     self.camera.targetTexture = self.textures[self.step % self.render_steps]
     remote_frame = self._renderer.Render(self.camera)
@@ -48,7 +48,17 @@ class QueuedRenderer:
     if len(frame_bytes) == 0:
       return None
 
-    import numpy as np
+    return frame_bytes
+
+  def render(self):
+    try:
+      import numpy as np
+    except ImportError:
+      raise ImportError("To use the `render` function you need numpy. Install it via `pip install numpy`. Alternatively, you can use the `render_raw` function to get the bytes from the ARGB RenderTexture.")
+
+    frame_bytes = self.render_raw()
+
+
     frame = np.frombuffer(frame_bytes, dtype=np.uint8).reshape(self.height, self.width, 4)
     frame = frame[::-1, :, :3]  # flip and remove alpha
     return frame

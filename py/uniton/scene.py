@@ -6,7 +6,7 @@ To implement this properly we need know about the C# type of each CsObject, see 
 Generally the code in here might be convenient but is slow in principle and poorly written
 """
 
-from .util import topy
+from .csutil import topy
 
 
 GETATTR_BLACKLIST = (

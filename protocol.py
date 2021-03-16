@@ -1,7 +1,9 @@
 
 
 UNITON_VERSION = "0.2.0"
+UNITON_DLL_VERSION = "0.2.0"
 MAGIC_NUMBER = 1283621
+
 
 # TODO: remove rpc class and expose constants directly
 py = f"""\
@@ -44,14 +46,15 @@ namespace Uniton{{
 """
 
 
+if __name__ == "__main__":
 
-import sys
+  import sys
 
-v = sys.argv[1]
+  v = sys.argv[1]
 
-if v == 'py':
-  print(py)
-elif v == 'cs':
-  print(cs)
-elif v == 'version':
-  print(UNITON_VERSION)
+  if v == 'py':
+    print(py)
+  elif v == 'cs':
+    print(cs)
+  elif v == 'version':
+    print(UNITON_VERSION)

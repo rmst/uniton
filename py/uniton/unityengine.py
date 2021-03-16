@@ -75,5 +75,5 @@ class UnityEngine(UnityProc):
     active_scene = self.SceneManagement.SceneManager.GetActiveScene()
     return Scene(active_scene)
 
-
-
+  def reset(self):
+    self.Application.LoadLevel(0)

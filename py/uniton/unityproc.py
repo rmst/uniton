@@ -5,10 +5,13 @@ from queue import Queue
 from threading import Thread
 from typing import Sequence
 from functools import lru_cache
+import os
+import subprocess
+from time import time, sleep
 
 from .csobject import CsObject
 from .protocol import rpc, MAGIC_NUMBER, UNITON_VERSION
-from .util import BrokenPromiseException
+from .csutil import BrokenPromiseException
 
 TLIST = (
   (int, rpc.INT32, struct.Struct("i")),
@@ -35,8 +38,14 @@ def recvall(sock, n):
   return data
 
 
-import subprocess
-from time import time
+
+def get_free_port():
+  """Not 100% guaranteed to be free but good enough"""
+  s = socket.socket()
+  s.bind(('', 0))
+  port = s.getsockname()[1]
+  s.close()
+  return port
 
 
 class UnityProc:
@@ -54,13 +63,16 @@ class UnityProc:
     atexit.register(self.close)
 
     if path is not None:
-      # TODO: find free port and set as env variable
+      host = '127.0.0.1'
+      port = get_free_port() if port is None else port
+      env = os.environ.copy()
+
+      env["UNITONPORT"] = str(port)
       # TODO: allow to set cmd line args
       # TODO: figure out how to set -screen-height -screen-width robustly
-      self._proc = subprocess.Popen([path])
+      self._proc = subprocess.Popen([path], env=env)
       # self._proc = subprocess.Popen([path, '-batchmode'])  # while this still renders on Mac OS it's much slower
-      host = '127.0.0.1'
-      port = 11001 if port is None else port
+
     else:
       host = '127.0.0.1' if host is None else host
       port = 11000 if port is None else port
@@ -82,6 +94,8 @@ class UnityProc:
           raise RuntimeError(f"Process {path} died before Uniton could connect!")
         elif time() > timeout:
           raise ConnectionRefusedError(f"Is {path} missing Uniton?")
+        else:
+          sleep(0.1) # wait, then repeat
 
     self._sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 

@@ -6,7 +6,7 @@ if sys.version_info < (3, 6):
   sys.exit('Sorry, Python < 3.6 is not supported')
 
 
-def import_directly(path, name=None):
+def direct_import(path, name=None):
     import importlib.util
     from os.path import basename, splitext
     if not name:
@@ -16,7 +16,7 @@ def import_directly(path, name=None):
     spec.loader.exec_module(module)
     return module
 
-protocol = import_directly(join(dirname(__file__), "uniton", "protocol.py"))
+protocol = direct_import(join(dirname(__file__), "uniton", "protocol.py"))
 
 setup(
     name='uniton',
@@ -29,7 +29,7 @@ setup(
     packages=find_packages(),
     scripts=[],
     install_requires=[
-        
+        # there shouldn't be any hard dependecies (we promise that in the readme)
     ],
     zip_safe=False,
     include_package_data=True

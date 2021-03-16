@@ -20,76 +20,80 @@ using System.Threading.Tasks;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
-using Uniton;
+// using Uniton;
+namespace Uniton{
 
-// using UnityEditor;  // needed for [InitializeOnLoad]
-// [InitializeOnLoad]
-// public class ETest{
-//   static ETest(){
-//     Debug.Log("Running in the Editor!");
-//   }
-// }
+  // using UnityEditor;  // needed for [InitializeOnLoad]
+  // [InitializeOnLoad]
+  // public class ETest{
+  //   static ETest(){
+  //     Debug.Log("Running in the Editor!");
+  //   }
+  // }
 
 
-public class UnityBehaviour : MonoBehaviour {
+  public class UnityBehaviour : MonoBehaviour {
 
-  [RuntimeInitializeOnLoadMethod]
-  public static void OnLoad(){
-    Log.Print("Uniton is running", Log.Level.INFO);
-    GameObject go = new GameObject("Uniton");
-    go.AddComponent<UnityBehaviour>();
-  }
+    [RuntimeInitializeOnLoadMethod]
+    public static void OnLoad(){
+      Log.Print("Uniton " + Flavor.name + "  " + Protocol.UNITON_VERSION + " is running", Log.Level.INFO);
 
-  // const int Port = 50051;
-  // Dispatcher disp;
-  Connection service;
-  // Use this for initialization
-  void Start () {
-    Debug.Log("" + Assembly.GetExecutingAssembly().Location);
+      AudioListener.volume = 0;  // disable sound
 
-    // disp = new Dispatcher();
-    service = new Connection();
-    // service.disp = disp;
-    service.Init();
+      GameObject go = new GameObject("Uniton");
+      go.AddComponent<UnityBehaviour>();
+    }
 
-    // service.ShareObj(typeof(MethodInfo).GetMethod("Invoke", new [] {typeof(object), typeof(object[])}));
+    // const int Port = 50051;
+    // Dispatcher disp;
+    Connection service;
+    // Use this for initialization
+    void Start () {
+      // disp = new Dispatcher();
+      service = new Connection();
+      // service.disp = disp;
+      service.Init();
 
-    // service.ShareObj(typeof(Type).GetMethod("GetMethod", new [] {typeof(string), typeof(Type[])}));
+      // service.ShareObj(typeof(MethodInfo).GetMethod("Invoke", new [] {typeof(object), typeof(object[])}));
 
-    // service.ShareObj(typeof(Type).GetMethod("InvokeMember", new [] {typeof(string), typeof(BindingFlags), typeof(Binder), typeof(object), typeof(object[])}));
+      // service.ShareObj(typeof(Type).GetMethod("GetMethod", new [] {typeof(string), typeof(Type[])}));
 
-    // service.ShareObj(typeof(object).GetMethod("GetType"));
-    // service.ShareObj(this);
-    // service.ShareObj(typeof(rpctest).GetMethod("GetGlobalType"));
+      // service.ShareObj(typeof(Type).GetMethod("InvokeMember", new [] {typeof(string), typeof(BindingFlags), typeof(Binder), typeof(object), typeof(object[])}));
 
-    // Server server = new Server {
-    //     Services = { UnpyGrpcService.BindService(service) },
-    //     Ports = { new ServerPort("0.0.0.0", Port, ServerCredentials.Insecure) }
-    // };
-  
-    // server.Start();
+      // service.ShareObj(typeof(object).GetMethod("GetType"));
+      // service.ShareObj(this);
+      // service.ShareObj(typeof(rpctest).GetMethod("GetGlobalType"));
 
-    // https://docs.unity3d.com/ScriptReference/MonoBehaviour.StartCoroutine.html
-    // StartCoroutine(service.CaptureFrames); 
-  }
+      // Server server = new Server {
+      //     Services = { UnpyGrpcService.BindService(service) },
+      //     Ports = { new ServerPort("0.0.0.0", Port, ServerCredentials.Insecure) }
+      // };
+    
+      // server.Start();
 
-  void Awake() {
-    // https://docs.unity3d.com/ScriptReference/Object.DontDestroyOnLoad.html
-    DontDestroyOnLoad(this.gameObject);
-  }
+      // https://docs.unity3d.com/ScriptReference/MonoBehaviour.StartCoroutine.html
+      // StartCoroutine(service.CaptureFrames); 
+    }
 
-  // Update is called once per frame
-  void Update () {
-    // disp.Update();
-    service.Update();
-  }
+    void Awake() {
+      // https://docs.unity3d.com/ScriptReference/Object.DontDestroyOnLoad.html
+      DontDestroyOnLoad(this.gameObject);
+    }
 
-  void FixedUpdate(){
-    service.FixedUpdate();
-  }
+    // Update is called once per frame
+    void Update () {
+      // disp.Update();
+      service.Update();
+    }
 
-  void OnGUI(){
-    service.OnGUI();
+    void FixedUpdate(){
+      service.FixedUpdate();
+    }
+
+    void OnGUI(){
+      service.OnGUI();
+    }
+
   }
 
 }
