@@ -13,6 +13,17 @@ Uniton lets you control the Unity game engine from Python. It aims to instrument
 </p>
 <br>
 
+### Quick Start
+```bash
+pip install uniton
+```
+```python
+import uniton
+# download and launch game from the demo video
+ue = uniton.examples.Kart()
+# for more check the 'Usage' section
+```
+
 ### Features
 
 [comment]: <> (Edit the table below via https://www.tablesgenerator.com/markdown_tables)
@@ -41,13 +52,7 @@ Uniton lets you control the Unity game engine from Python. It aims to instrument
 [comment]: <> (I'm also considering making an editor-focussed version of Uniton to facilitate world creation and asset management.)
 
 ### Usage
-Install the Python package via
-```bash
-pip install uniton
-```
-
-
-#### To launch and connect to a Uniton app do
+To launch and connect to a Uniton app do
 ```python
 import uniton
 ue = uniton.UnityEngine(path='path/to/binary')
