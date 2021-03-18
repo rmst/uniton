@@ -26,10 +26,10 @@ Uniton lets you control the Unity game engine from Python. It aims to instrument
 | Faster-than-real-time rendering and simulation             	|      ☕️      	|                                        ☕️                                        	|                                         ☕️                                        	|                                           ☕️                                          	|
 | No dependencies beyond Python and Unity                    	|      ☕️      	|                                        ☕️                                        	|                                         ☕️                                        	|                                           ☕️                                          	|
 | Use standalone apps and examples everywhere                	|      ☕️      	|                                        ☕️                                        	|                                         ☕️                                        	|                                           ☕️                                          	|
-| Standalone apps you built run on                           	| same device 	|                          all your devices <sup>2</sup>                          	|                                   every device                                   	|                                     every device                                     	|
+| Standalone apps you build run on                           	| same device 	|                          all your devices <sup>2</sup>                          	|                                   every device                                   	|                                     every device                                     	|
 | Import custom C# code at runtime (even standalone)         	|             	|                                        🧪                                        	|                                         🧪                                        	|                                           🧪                                          	|
 | Import models at runtime (even standalone) <sup>3</sup>    	|             	|                                        🧪                                        	|                                         🧪                                        	|                                           🧪                                          	|
-| Standalone apps have pro features (even for non-pro users) 	|             	|                                                                                 	|                                                                                  	|                                           🧪                                          	|
+| Standalone apps you build have pro features (even for free users) 	|             	|                                                                                 	|                                                                                  	|                                           🧪                                          	|
 
 
 ☕ = available,  🧪 = work in progress
@@ -51,13 +51,18 @@ pip install uniton
 ```python
 import uniton
 ue = uniton.UnityEngine(path='path/to/binary')
+```
 
-# Alternatively, to try out all features (including Pro) in a pre-built app do
+Uniton also comes with pre-built example environments that automatically download if they are instantiated. Below are two examples but there are more. Check out [uniton/examples](https://github.com/uniton-dev/uniton/tree/main/examples)!
+
+```python
+# The kart game from the demo video
 ue = uniton.examples.KartGame()
 
-# To try out all features (including Pro) in a higher fidelity scene do
+# A higher fidelity scene
 ue = uniton.examples.Temple()
 ```
+
 
 #### To connect to a Unity editor or to a running standalone app do
 ```python
