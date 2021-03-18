@@ -4,10 +4,10 @@
 
 [comment]: <> ([![]&#40;./res/yt_thumbnail.png&#41;]&#40;https://www.youtube.com/watch?v=FIpt2yv623k&#41;)
 
-<div>
+<p float="left" align="middle">
 <img src="res/screenshot1.png" width=48% style="padding: 0%;"/>
-<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="res/yt_thumbnail.png" width=48% style="padding: 0%; float: right;"/></a>
-</div>
+<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="res/yt_thumbnail.png" width=48% style="padding: 0%;"/></a>
+</p>
 <br>
 
 ### Features
