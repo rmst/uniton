@@ -1,12 +1,15 @@
 # Uniton – Control Unity From Python
 
+Uniton lets you control the Unity game engine from Python. It aims to instrumentalize Unity and make it more useful in non-game applications.
+
+
 [comment]: <> (Uniton is a framework to control the Unity game engine from Python. Here is a three-minute intro video:)
 
 [comment]: <> ([![]&#40;./res/yt_thumbnail.png&#41;]&#40;https://www.youtube.com/watch?v=FIpt2yv623k&#41;)
 
 <p float="left" align="middle">
-<img src="res/screenshot1.png" width=48% style="padding: 0%;"/>
-<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="res/yt_thumbnail.png" width=48% style="padding: 0%;"/></a>
+<img src="res/screenshot1.png" width=49% style="padding: 0%;"/>
+<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="res/yt_thumbnail.png" width=49% style="padding: 0%;"/></a>
 </p>
 <br>
 
@@ -32,7 +35,7 @@
 ☕ = available,  🧪 = work in progress
 
 <sup>1</sup> Autocomplete is available only during live-coding (e.g. python repl, ipython, jupyter notebooks). <br>
-<sup>2</sup> Requires Github login (check [sponsors page](https://github.com/sponsors/uniton-dev)). <br>
+<sup>2</sup> Requires Github login  (check [sponsors page](https://github.com/sponsors/uniton-dev)). <br>
 <sup>3</sup> Supports `.obj` and `.urdf` models.
 
 [comment]: <> (I'm also considering making an editor-focussed version of Uniton to facilitate world creation and asset management.)
