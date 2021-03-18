@@ -5,8 +5,8 @@
 [comment]: <> ([![]&#40;./res/yt_thumbnail.png&#41;]&#40;https://www.youtube.com/watch?v=FIpt2yv623k&#41;)
 
 <div>
-<img src="./res/screenshot1.png" width=49% style="padding: 0%;"/>
-<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="./res/yt_thumbnail.png" width=50% style="padding: 0%;"/></a>
+<img src="res/screenshot1.png" width=48% style="padding: 0%;"/>
+<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="res/yt_thumbnail.png" width=48% style="padding: 0%; float: right;"/></a>
 </div>
 <br>
 
