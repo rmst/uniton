@@ -9,7 +9,7 @@ Uniton lets you control the Unity game engine from Python. It aims to instrument
 
 <p float="left" align="middle">
 <img src="res/screenshot1.png" width=49% style="padding: 0%;"/>
-<a href="https://www.youtube.com/watch?v=FIpt2yv623k"><img src="res/yt_thumbnail.png" width=49% style="padding: 0%;"/></a>
+<a href="https://youtu.be/7BHYa1Ycb-A"><img src="res/yt_thumbnail.png" width=49% style="padding: 0%;"/></a>
 </p>
 <br>
 
