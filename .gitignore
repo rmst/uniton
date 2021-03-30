@@ -1,0 +1,16 @@
+# OS files
+.DS_Store
+
+# IDE files
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Build artifacts
+*.dll
+*_Protocol.cs
+
+# Presentation files
+*.key

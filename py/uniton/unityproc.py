@@ -8,10 +8,10 @@ from functools import lru_cache
 import os
 import subprocess
 from time import time, sleep
-
 from .csobject import CsObject
 from .protocol import rpc, MAGIC_NUMBER, UNITON_VERSION
 from .csutil import BrokenPromiseException
+
 
 TLIST = (
   (int, rpc.INT32, struct.Struct("i")),
@@ -59,7 +59,7 @@ class UnityProc:
   _proc = None
   _sock = None
 
-  def __init__(self, path=None, host=None, port=None):
+  def __init__(self, path=None, host=None, port=None, paused=False):
     atexit.register(self.close)
 
     if path is not None:
@@ -67,7 +67,8 @@ class UnityProc:
       port = get_free_port() if port is None else port
       env = os.environ.copy()
 
-      env["UNITONPORT"] = str(port)
+      env["UNITON_PORT"] = str(port)
+      env["UNITON_PAUSED"] = str(paused)
       # TODO: allow to set cmd line args
       # TODO: figure out how to set -screen-height -screen-width robustly
       self._proc = subprocess.Popen([path], env=env)
@@ -97,14 +98,55 @@ class UnityProc:
         else:
           sleep(0.1) # wait, then repeat
 
-    self._sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    # self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_LINGER, struct.pack('ii', 1, 0))
 
-    # version compatibility check
+    # bootstrap
+
+    # magic exchange
+    self._sock.sendall(struct.pack("i", MAGIC_NUMBER))
     magic_number, = struct.unpack('i', recvall(self._sock, 4))
     if magic_number != MAGIC_NUMBER:
       raise ConnectionError("Could not connect.")
+    # bootstrap, = struct.unpack('i', recvall(self._sock, 4))
+
+    # if bootstrap:
+    from importlib import resources
+    dll = resources.read_binary("uniton", "core.dll")
+
+    self._sock.sendall(struct.pack("i", len(dll)))
+    self._sock.sendall(dll)
+    # zero, = struct.unpack('i', recvall(self._sock, 4))  # wait for a 0 as confirmation (so we don't move on to quickly)
+    # assert zero == 0
 
 
+    # sleep(1)  # give the server some time to close and reopen the port
+    # self._sock.shutdown(socket.SHUT_WR)
+    # self._sock.recv(0)
+
+    # self._sock.close()
+    # print("closed, waiting..")
+
+    # sleep(4)  # We need to wait, otherwise we'll get "Adress already in use" on the server. I've tried to close the socket quicker but nothing worked.
+    #
+    #
+    # # reconnect now to core.dll
+    # self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # self._sock.connect((host, port))
+
+    # self._sock.sendall(struct.pack("i", MAGIC_NUMBER))
+    # magic_number, = struct.unpack('i', recvall(self._sock, 4))
+    # if magic_number != MAGIC_NUMBER:
+    #   raise ConnectionError("Could not connect.")
+    # bootstrap, = struct.unpack('i', recvall(self._sock, 4))
+    # assert not bootstrap, "We should have already bootstrapped!"
+
+    #
+    # else:
+    #   print("Warning: This Uniton process has been connected to before. This could lead to strange behaviour.")
+
+
+
+    # version compatibility check
     remote_version_tuple = struct.unpack('iii', recvall(self._sock, 4 * 3))
     self._remote_version = ".".join(str(x) for x in remote_version_tuple)
     local_version_macro = ".".join(UNITON_VERSION.split(".")[:2])
@@ -120,6 +162,13 @@ class UnityProc:
       raise ConnectionError(f'Remote Uniton version {self._remote_version} is not compatible with local version {UNITON_VERSION}. Change remote version to {local_version_macro}.* or local version to {remote_version_macro}.* via\n\npip install "uniton=={remote_version_macro}.*" --force-reinstall\n')
 
 
+    # sponsorship check
+    sponsor_error_len, = struct.unpack('i', recvall(self._sock, 4))
+    if sponsor_error_len:
+      msg = recvall(self._sock, sponsor_error_len).decode("utf-8", "strict")
+      raise PermissionError(msg)
+
+
     # init object management
     self._garbage_objects = []
 
@@ -129,6 +178,10 @@ class UnityProc:
 
     from .namespace import Namespace
     self._ns = Namespace(self)
+
+    if paused:
+      self.pause()  # TODO: this is implemented in unityengine.py, should merge those two classes?
+
     # from .unity_old import UnityEngine
     # self._ns.ue = self._ns.UnityEngine = UnityEngine(self)
 

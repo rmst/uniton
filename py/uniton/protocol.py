@@ -1,6 +1,6 @@
 # This is a generated file. Do not modify manually.
 
-UNITON_VERSION = "0.2.0"
+UNITON_VERSION = "0.3.6"
 MAGIC_NUMBER = 1283621
 
 class rpc:
@@ -18,5 +18,4 @@ class rpc:
   OPEN_CMD_STREAM = 10
   BYTES = 11
   SETMEMBER = 12
-
 

@@ -8,21 +8,19 @@ from xbrain import xb
 from protocol import UNITON_VERSION
 UNITON_PUBLIC = "../uniton"
 DLL_NAME = "uniton.dll"
-RELEASE_MESSAGE = 'new versioning system'
-
+RELEASE_MESSAGE = 'update examples'
+import buildpy
+import buildcs
 
 def s(*args):
   import os
   assert os.system(*args) == 0
 
 
-def r(f):
-  f()
-
-
-def proto():
-  s("python protocol.py py > py/uniton/protocol.py")
-  s("python protocol.py cs > cs/src/Protocol.cs")
+# def proto():
+#   import protocol
+#   protocol.py()
+#   protocol.cs()
 
 
 def landing_page():
@@ -48,23 +46,35 @@ def landing_page_asset():
 
 
 def dev_release():
-  proto()
+  # proto()
   s(f"git add . && git commit -m {RELEASE_MESSAGE!r} && git push")
   s(f"git tag -a v{UNITON_VERSION} -m '{RELEASE_MESSAGE!r}'")
   s(f"git push --follow-tags")
 
 
+# def cs_release():
+#   import buildcs, protocol
+#   protocol.cs()
+#   buildcs.dlls()
+#   landing_page()
+#   landing_page_tag()
+#   landing_page_asset
 
 
-def cs_release():
-  import buildcs
-  buildcs.dlls()
+# def py_release():
+#   import buildcs, buildpy, protocol
+#   protocol.cs()
+#   protocol.py()
+#   buildcs.core_dll()
+#   buildpy.pypi()
+
+
+if __name__ == "__main__":
+  # buildpy.dev()
+  # buildpy.pypi()
+
+  # buildcs.test_uniton_dll()
+  # buildcs.test_cs()
+
+
   landing_page()
-  landing_page_tag()
-  landing_page_asset
-
-
-def py_release():
-  import buildpy
-  # TODO: buildpy.
-

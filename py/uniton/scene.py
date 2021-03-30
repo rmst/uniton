@@ -96,7 +96,7 @@ class GameObject:
     'forward',
     'RotateAroundLocal',
     'GetChild',
-    'FindChild',
+    # 'FindChild',  depreciated, use Find
     'right',
     'GetComponentsInChildren',
     'tag',
@@ -179,18 +179,12 @@ class GameObject:
     if item in GameObject._CS_TRANSFORM_MEMBERS:
       return getattr(self._go.transform, item)
 
-    cos = self._components()
-    co_names = topy([co.GetType().Name for co in cos])
-    if item in co_names:
-      idx = co_names.index(item)
-      co = cos[idx]
-      return co
-
-    gos = self._children()
-    go_names = _go_names(gos)
-    if item in go_names:
-      idx = go_names.index(item)
-      return GameObject(gos[idx])
+    if item[0].islower():
+      item = item[0].upper() + item[1:]
+      return self.GetComponent(getattr(self._go.ue.UnityEngine, item))
+    else:
+      go = self.transform.Find(item)
+      return GameObject(go)
 
     raise AttributeError(f"'{item}' is neither a component, child nor attribute of {self}")
 
@@ -209,7 +203,9 @@ class GameObject:
 
   def __dir__(self):
     co_names = topy([co.GetType().Name for co in self._components()])
-    go_names = _go_names(self._children())
+    co_names = [n[0].lower() + n[1:] for n in co_names]
+
+    go_names = _go_names(self._children())  # filter lowercase ones?
 
     names = [n for n in (co_names + go_names) if n.isidentifier()]
     names += GameObject._CS_GAMEOBJECT_MEMBERS

@@ -1,12 +1,26 @@
+from os.path import dirname, join
+
+CS = join(dirname(__file__), 'cs')
+PY = join(dirname(__file__), 'py')
 
 
-UNITON_VERSION = "0.2.0"
-UNITON_DLL_VERSION = "0.2.0"
+UNITON_VERSION = "0.3.6"
+# UNITON_DLL_VERSION = "0.3.0"
 MAGIC_NUMBER = 1283621
+
+skip_dll_bytes = 239
+
+
+def replace_all(variables: dict, template: str):
+  for k, v in variables.items():
+    template = template.replace(f"<<<{k}>>>", v)
+
+  return template
 
 
 # TODO: remove rpc class and expose constants directly
-py = f"""\
+def template_py():
+  return f"""\
 # This is a generated file. Do not modify manually.
 
 UNITON_VERSION = "{UNITON_VERSION}"
@@ -32,10 +46,12 @@ class rpc:
 
 
 # TODO: add more of the protocol below
-# we write {{ to produce one curly brace
-cs = f"""\
+# in format string f"..." we can write {{ to produce one curly brace
+
+def template_cs(namespace="Uniton"):
+  return f"""\
 // This is a generated file. Do not modify manually.
-namespace Uniton{{
+namespace {namespace}{{
 
   public static class Protocol{{
     public static string UNITON_VERSION = "{UNITON_VERSION}";
@@ -46,15 +62,16 @@ namespace Uniton{{
 """
 
 
-if __name__ == "__main__":
-
-  import sys
-
-  v = sys.argv[1]
-
-  if v == 'py':
-    print(py)
-  elif v == 'cs':
-    print(cs)
-  elif v == 'version':
-    print(UNITON_VERSION)
+# def py():
+#   open(PY+"/uniton/protocol.py", "w").write(template_py())
+#
+#
+# def cs():
+#   open(CS + "/src/_Protocol.cs", "w").write(template_cs("Uniton"))
+#   open(CS + "/src/bootstrap/_Protocol.cs", "w").write(template_cs("Uniton.Bootstrap"))
+#   open(CS + "/src/editor/_Protocol.cs", "w").write(template_cs("Uniton.Editor"))
+#
+#
+# if __name__ == "__main__":
+#   py()
+#   cs()

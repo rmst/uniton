@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 from os.path import dirname, join
 
 import sys
-if sys.version_info < (3, 6):
-  sys.exit('Sorry, Python < 3.6 is not supported')
+if sys.version_info < (3, 7):
+  sys.exit('Sorry, Python < 3.7 is not supported')
 
 
 def direct_import(path, name=None):
