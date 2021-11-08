@@ -4,7 +4,8 @@ from timeit import timeit
 from uniton import UnityEngine
 from uniton.render import QueuedRenderer
 
-ue = UnityEngine("/Users/simon/dev/UnityKart3/Kart.app/Contents/MacOS/New Unity Project")
+import os
+ue = UnityEngine(os.getenv("UNITY_BUILD_PATH"))
 # ue = uniton.UnityEngine()
 
 ue.pause()

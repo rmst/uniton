@@ -1,6 +1,6 @@
 DIR:=$(strip $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)))))
-UNITYENGINE_DLL="/Applications/Unity/Hub/Editor/2020.2.6f1/Unity.app/Contents/Managed/UnityEngine.dll"
-UNITYEDITOR_DLL="/Applications/Unity/Hub/Editor/2020.2.6f1/Unity.app/Contents/Managed/UnityEditor.dll"
+UNITYENGINE_DLL?=$(error UNITYENGINE_DLL is not set)
+UNITYEDITOR_DLL?=$(error UNITYEDITOR_DLL is not set)
 FLAVOR:=plus
 
 dll:
@@ -22,12 +22,9 @@ src-link:
 	mkdir ${TGT}/Uniton/${FLAVOR}
 	ln -sf ${DIR}/src/${FLAVOR}/*.cs ${TGT}/Uniton/${FLAVOR}/
 
-#test:
-#	ln -sf ${DIR}/src/* /Users/simon/dev/unpy/unity/Unpy/Assets/Scripts/
-#	ln -sf ${DIR}/src/* /Users/simon/dev/UnityKart3/Assets/
-#	ln -sf ${DIR}/src/* /Users/simon/dev/ue/temple/Assets/
 src-test:
-	make src-link TGT=/Users/simon/dev/UnityKart3/Assets/ FLAVOR=pro
+	@echo "Set UNITY_PROJECT_PATH environment variable to test"
+	@test -n "$$UNITY_PROJECT_PATH" && make src-link TGT=$$UNITY_PROJECT_PATH/Assets/ FLAVOR=pro || true
 
 
 dll-link:
@@ -35,6 +32,6 @@ dll-link:
 	ln -sf ${DIR}/out/${NAME} ${TGT}/Uniton/
 
 dll-test:
+	@echo "Set UNITY_PROJECT_PATH environment variable to test"
 	make dll FLAVOR=free NAME=uniton.dll
-	make dll-link TGT=/Users/simon/dev/UnityKart3/Assets/ NAME=uniton.dll
-	#make dll-link_cs TGT=/Users/simon/dev/UnityKart3/Assets/
+	@test -n "$$UNITY_PROJECT_PATH" && make dll-link TGT=$$UNITY_PROJECT_PATH/Assets/ NAME=uniton.dll || true

@@ -3,8 +3,9 @@ from os.path import dirname, join
 CS = join(dirname(__file__), 'cs')
 PY = join(dirname(__file__), 'py')
 
-UNITYENGINE_DLL = "/Applications/Unity/Hub/Editor/2020.2.1f1/Unity.app/Contents/Managed/UnityEngine.dll"
-UNITYEDITOR_DLL = "/Applications/Unity/Hub/Editor/2020.2.1f1/Unity.app/Contents/Managed/UnityEditor.dll"
+import os
+UNITYENGINE_DLL = os.getenv("UNITYENGINE_DLL")
+UNITYEDITOR_DLL = os.getenv("UNITYEDITOR_DLL")
 
 # TODO: check if we still need AsyncGPUReadbackPlugin.dll for linux
 
@@ -65,13 +66,10 @@ def link_uniton_dll(target):
 
 def test_uniton_dll():
   uniton_dll()
-  link_uniton_dll('/Users/simon/dev/unpy/unity/Unpy/Assets/Scripts')
-  link_uniton_dll('/Users/simon/dev/ue/empty/Assets')
-  link_uniton_dll('/Users/simon/dev/ue/floodedgrounds/Assets')
-  link_uniton_dll('/Users/simon/dev/ue/forest/Assets')
-  link_uniton_dll('/Users/simon/dev/ue/kart/Assets')
-  link_uniton_dll('/Users/simon/dev/ue/temple/Assets')
-  link_uniton_dll('/Users/simon/dev/ue/windridgecity/Assets')
+  unity_projects = os.getenv("UNITY_PROJECTS", "").split(":")
+  for project in unity_projects:
+    if project:
+      link_uniton_dll(f'{project}/Assets')
 
 
 def link_cs(target):
@@ -83,16 +81,20 @@ def link_cs(target):
 
 
 def test_cs():
-  link_cs('/Users/simon/dev/ue/temple/Assets')
-  link_cs('/Users/simon/dev/ue/empty/Assets')
+  unity_projects = os.getenv("UNITY_PROJECTS", "").split(":")
+  for project in unity_projects[:2]:  # limit to first 2 for testing
+    if project:
+      link_cs(f'{project}/Assets')
 
 
 def zip_bin(name):
   import shutil
   print(f"zipping {name}")
-  shutil.make_archive(f'cs/out/{name}_mac', 'zip', f'/Users/simon/dev/ue/{name}/Out/{name.capitalize()}.app')
-  shutil.make_archive(f'cs/out/{name}_linux', 'zip', f'/Users/simon/dev/ue/{name}/Out/{name.capitalize()}-Linux')
-  shutil.make_archive(f'cs/out/{name}_windows', 'zip', f'/Users/simon/dev/ue/{name}/Out/{name.capitalize()}-Windows')
+  build_dir = os.getenv("UNITY_BUILD_DIR", "")
+  if build_dir:
+    shutil.make_archive(f'cs/out/{name}_mac', 'zip', f'{build_dir}/{name}/Out/{name.capitalize()}.app')
+    shutil.make_archive(f'cs/out/{name}_linux', 'zip', f'{build_dir}/{name}/Out/{name.capitalize()}-Linux')
+    shutil.make_archive(f'cs/out/{name}_windows', 'zip', f'{build_dir}/{name}/Out/{name.capitalize()}-Windows')
 
 
 def example_builds():

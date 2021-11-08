@@ -60,18 +60,3 @@ namespace {namespace}{{
   
 }}
 """
-
-
-# def py():
-#   open(PY+"/uniton/protocol.py", "w").write(template_py())
-#
-#
-# def cs():
-#   open(CS + "/src/_Protocol.cs", "w").write(template_cs("Uniton"))
-#   open(CS + "/src/bootstrap/_Protocol.cs", "w").write(template_cs("Uniton.Bootstrap"))
-#   open(CS + "/src/editor/_Protocol.cs", "w").write(template_cs("Uniton.Editor"))
-#
-#
-# if __name__ == "__main__":
-#   py()
-#   cs()

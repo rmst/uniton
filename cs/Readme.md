@@ -20,7 +20,7 @@ ln -sf $(pwd)/src/* destination
 ```
 E.g.
 ```
-ln -sf $(pwd)/src/* /Users/simon/dev/unpy/unity/Unpy/Assets/Scripts/
+ln -sf $(pwd)/src/* $UNITY_PROJECT_PATH/Assets/Scripts/
 ```
 
 

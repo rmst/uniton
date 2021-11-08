@@ -4,7 +4,8 @@ import uniton
 # from timeit import timeit
 from uniton.render import QueuedRenderer
 
-ue = uniton.UnityEngine("/Users/simon/dev/unpy/unity/Unpy/testbin.app/Contents/MacOS/Unpy")
+import os
+ue = uniton.UnityEngine(os.getenv("UNITY_BUILD_PATH"))
 # u = uniton.Unity()
 ue.pause()
 

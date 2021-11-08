@@ -55,7 +55,8 @@ for i in range(250):
 
 # == Rotate and Render ==
 from uniton import UnityEngine
-ue = UnityEngine("/Users/simon/dev/UnityKart3/Kart.app/Contents/MacOS/New Unity Project")
+import os
+ue = UnityEngine(os.getenv("UNITY_BUILD_PATH"))
 ue.pause()
 
 # QueuedRenderer helps with getting frames from Unity without blocking execution

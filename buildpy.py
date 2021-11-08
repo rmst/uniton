@@ -1,10 +1,10 @@
 # The following variables should be set
 #	export TWINE_USERNAME='...'
-#	export TWINE_PASSPORT='...'
+#	export TWINE_PASSWORD='...'
 from contextlib import contextmanager
-from xbrain import xb
 
 from os.path import dirname, join
+import os
 import protocol
 import buildcs
 
@@ -43,7 +43,9 @@ def pypi():
     s('pip install twine')
     s('rm -rf build dist')
     s('python setup.py sdist bdist_wheel')
-    s(f'TWINE_USERNAME={xb.twine.u} TWINE_PASSPORT={xb.twine.pw} twine upload dist/*')
+    twine_username = os.getenv("TWINE_USERNAME")
+    twine_password = os.getenv("TWINE_PASSWORD")
+    s(f'TWINE_USERNAME={twine_username} TWINE_PASSWORD={twine_password} twine upload dist/*')
     s('rm -rf dist build')
 
 
